@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-engine-config
+  namespace: rag-engine
+data:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+  CHROMA_HOST: "chroma-service"
+  CHROMA_PORT: "8000"
+  REDIS_URL: "redis://redis-service:6379"
+  WORKERS: "4"
+  
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: rag-engine
+data:
+  nginx.conf: |
+    events {
+        worker_connections 2048;
+        use epoll;
+        multi_accept on;
+    }
+
+    http {
+        upstream rag_engine {
+            least_conn;
+            server rag-engine-service:8000 max_fails=3 fail_timeout=30s;
+            keepalive 32;
+        }
+
+        # Rate limiting
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+
+        # Logging
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /var/log/nginx/access.log main;
+        error_log /var/log/nginx/error.log;
+
+        # Gzip compression
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_types text/plain application/json application/xml text/css application/javascript;
+
+        server {
+            listen 80;
+            server_name _;
+
+            # Security headers
+            add_header X-Frame-Options DENY;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+
+            location /api/ {
+                limit_req zone=api burst=20 nodelay;
+                
+                proxy_pass http://rag_engine;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                
+                proxy_connect_timeout 30s;
+                proxy_send_timeout 30s;
+                proxy_read_timeout 30s;
+            }
+
+            location /health {
+                proxy_pass http://rag_engine/health;
+                proxy_set_header Host $host;
+                
+                proxy_connect_timeout 5s;
+                proxy_send_timeout 5s;
+                proxy_read_timeout 5s;
+            }
+
+            location / {
+                return 404;
+            }
+        }
+    }

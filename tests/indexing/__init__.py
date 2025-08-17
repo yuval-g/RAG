@@ -1,0 +1,1 @@
+# Indexing component tests

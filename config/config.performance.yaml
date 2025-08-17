@@ -1,0 +1,86 @@
+# Performance-optimized configuration for the RAG system
+# This configuration enables all performance optimization features
+
+# Environment
+environment: "production"
+
+# LLM Configuration
+llm_provider: "google"
+llm_model: "gemini-2.0-flash-lite"
+temperature: 0.0
+max_tokens: 2048
+
+# Embedding Configuration
+embedding_provider: "openai"
+embedding_model: "text-embedding-ada-002"
+normalize_embeddings: true
+
+# Vector Store Configuration
+vector_store: "chroma"
+vector_store_config:
+  persist_directory: "./data/chroma_db"
+  collection_name: "rag_documents"
+
+# Indexing Configuration
+indexing_strategy: "basic"
+chunk_size: 1000
+chunk_overlap: 200
+
+# Query Processing Configuration
+query_strategies: ["multi_query", "rag_fusion"]
+enable_multi_query: true
+enable_rag_fusion: true
+enable_decomposition: false
+enable_step_back: false
+enable_hyde: false
+
+# Routing Configuration
+routing_enabled: false
+routing_strategy: "logical"
+
+# Retrieval Configuration
+retrieval_k: 5
+use_reranking: true
+reranker_model: "cohere"
+reranker_top_k: 10
+
+# Hybrid Retrieval Configuration
+enable_hybrid_retrieval: false
+vector_weight: 0.7
+keyword_weight: 0.3
+enable_long_context: false
+context_window_size: 100000
+adaptive_retrieval: false
+
+# Self-Correction Configuration
+enable_self_correction: false
+relevance_threshold: 0.7
+factuality_threshold: 0.7
+min_relevant_docs: 2
+
+# Generation Configuration
+include_sources: true
+
+# Evaluation Configuration
+evaluation_frameworks: ["custom", "deepeval"]
+
+# Production Configuration
+enable_logging: true
+log_level: "INFO"
+enable_metrics: true
+enable_caching: true
+
+# Performance Configuration
+connection_pool_size: 20
+connection_timeout: 30.0
+cache_size: 10000
+cache_ttl: 3600.0
+async_enabled: true
+max_concurrent_requests: 50
+batch_size: 20
+enable_connection_pooling: true
+
+# API Keys (set via environment variables)
+# GOOGLE_API_KEY: "your-google-api-key"
+# OPENAI_API_KEY: "your-openai-api-key"
+# COHERE_API_KEY: "your-cohere-api-key"

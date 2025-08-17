@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # RAG Engine API
+  rag-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+      - "8089:8089"  # Health API port
+    environment:
+      - ENVIRONMENT=development
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8001
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=INFO
+    volumes:
+      - .:/app
+      - rag_data:/app/data
+      - rag_logs:/app/logs
+    depends_on:
+      - chroma
+      - redis
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+  # Chroma Vector Database
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+      - PERSIST_DIRECTORY=/chroma/chroma
+    volumes:
+      - chroma_data:/chroma/chroma
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - rag-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./deployment/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./deployment/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deployment/nginx.conf:/etc/nginx/nginx.conf
+      - ./deployment/ssl:/etc/nginx/ssl
+    depends_on:
+      - rag-engine
+    networks:
+      - rag-network
+    restart: unless-stopped
+
+volumes:
+  rag_data:
+  rag_logs:
+  chroma_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  rag-network:
+    driver: bridge

@@ -1,0 +1,38 @@
+# Production environment configuration
+# This file extends the base config with production-specific settings
+
+# Production-specific overrides
+environment: "production"
+log_level: "WARNING"
+enable_logging: true
+enable_metrics: true
+enable_caching: true
+
+# Optimized chunk settings for production
+chunk_size: 1000
+chunk_overlap: 200
+
+# Higher retrieval count for better accuracy
+retrieval_k: 10
+
+# Enable advanced features for better results
+enable_multi_query: true
+enable_rag_fusion: true
+enable_self_correction: true
+use_reranking: true
+reranker_top_k: 20
+
+# Enable hybrid retrieval for production
+enable_hybrid_retrieval: true
+vector_weight: 0.7
+keyword_weight: 0.3
+
+# Production vector store settings
+vector_store_config:
+  persist_directory: "/data/chroma_prod"
+  collection_name: "rag_production"
+  
+# Production-specific thresholds
+relevance_threshold: 0.8
+factuality_threshold: 0.8
+min_relevant_docs: 3

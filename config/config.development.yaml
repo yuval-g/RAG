@@ -1,0 +1,27 @@
+# Development environment configuration
+# This file extends the base config with development-specific settings
+
+# Development-specific overrides
+environment: "development"
+log_level: "DEBUG"
+enable_logging: true
+enable_metrics: false
+enable_caching: false
+
+# Use smaller chunks for faster development
+chunk_size: 500
+chunk_overlap: 50
+
+# Lower retrieval count for faster responses
+retrieval_k: 3
+
+# Disable advanced features for simpler debugging
+enable_multi_query: false
+enable_rag_fusion: false
+enable_self_correction: false
+use_reranking: false
+
+# Development vector store settings
+vector_store_config:
+  persist_directory: "./data/chroma_dev"
+  collection_name: "rag_dev"

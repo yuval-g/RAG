@@ -1,0 +1,33 @@
+# Testing environment configuration
+# This file extends the base config with testing-specific settings
+
+# Testing-specific overrides
+environment: "testing"
+log_level: "ERROR"
+enable_logging: true
+enable_metrics: false
+enable_caching: false
+
+# Small chunks for fast test execution
+chunk_size: 200
+chunk_overlap: 20
+
+# Minimal retrieval for speed
+retrieval_k: 2
+
+# Disable advanced features for predictable testing
+enable_multi_query: false
+enable_rag_fusion: false
+enable_self_correction: false
+use_reranking: false
+enable_hybrid_retrieval: false
+
+# In-memory vector store for testing
+vector_store_config:
+  persist_directory: null
+  collection_name: "rag_test"
+
+# Relaxed thresholds for testing
+relevance_threshold: 0.5
+factuality_threshold: 0.5
+min_relevant_docs: 1

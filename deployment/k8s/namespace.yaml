@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rag-engine
+  labels:
+    name: rag-engine
+    environment: production

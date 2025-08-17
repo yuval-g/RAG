@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-engine
+  namespace: rag-engine
+  labels:
+    app: rag-engine
+    version: v1
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rag-engine
+  template:
+    metadata:
+      labels:
+        app: rag-engine
+        version: v1
+    spec:
+      containers:
+      - name: rag-engine
+        image: rag-engine:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: api
+        - containerPort: 8089
+          name: health
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-engine-secrets
+              key: GOOGLE_API_KEY
+        envFrom:
+        - configMapRef:
+            name: rag-engine-config
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8089
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8089
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+        - name: logs-volume
+          mountPath: /app/logs
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: rag-engine-data-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: rag-engine-logs-pvc
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-engine-service
+  namespace: rag-engine
+  labels:
+    app: rag-engine
+spec:
+  selector:
+    app: rag-engine
+  ports:
+  - name: api
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+  - name: health
+    port: 8089
+    targetPort: 8089
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rag-engine-data-pvc
+  namespace: rag-engine
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-ssd
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rag-engine-logs-pvc
+  namespace: rag-engine
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard

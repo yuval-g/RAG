@@ -1,0 +1,56 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+  external_labels:
+    environment: 'production'
+    cluster: 'rag-engine-prod'
+
+rule_files:
+  - "rules/*.yml"
+
+scrape_configs:
+  # RAG Engine metrics (production)
+  - job_name: 'rag-engine-prod'
+    static_configs:
+      - targets: ['rag-engine:8089']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    honor_labels: true
+
+  # System metrics
+  - job_name: 'node-exporter-prod'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Redis metrics
+  - job_name: 'redis-prod'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+
+  # Nginx metrics
+  - job_name: 'nginx-prod'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+    scrape_interval: 30s
+
+  # Chroma metrics (if available)
+  - job_name: 'chroma-prod'
+    static_configs:
+      - targets: ['chroma:8000']
+    metrics_path: '/api/v1/heartbeat'
+    scrape_interval: 60s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Storage configuration for production
+storage:
+  tsdb:
+    retention.time: 30d
+    retention.size: 50GB
