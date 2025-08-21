@@ -246,25 +246,25 @@ This setup allows code changes on the host machine to be immediately reflected i
 ### Debugging
 
 *   **Execute shell in container:**
-    ```bash
+```bash
 docker-compose exec rag-engine bash
-    ```
+```
 *   **View real-time logs:**
-    ```bash
+```bash
 docker-compose logs -f rag-engine
-    ```
+```
 *   **Check container stats:**
-    ```bash
+```bash
 docker stats
-    ```
+```
 *   **Inspect container (e.g., run Python code inside):**
-    ```bash
+```bash
 docker-compose exec rag-engine python -c "
 from src.rag_engine.core.engine import RAGEngine
 engine = RAGEngine()
 print(engine.get_system_info())
 "
-    ```
+```
 
 ### Development Tools
 
@@ -295,10 +295,10 @@ deploy:
 ### Security Hardening
 
 1.  **Non-root User**: Run containers with a dedicated non-root user.
-    ```dockerfile
-    RUN groupadd -r raguser && useradd -r -g raguser raguser
-    USER raguser
-    ```
+```dockerfile
+RUN groupadd -r raguser && useradd -r -g raguser raguser
+USER raguser
+```
 
 2.  **Read-only Filesystem**: Mount the container's root filesystem as read-only, allowing writes only to specific volumes or `tmpfs`.
 ```yaml
@@ -330,11 +330,11 @@ environment:
 ```
 
 2.  **Connection Pooling**: Configure connection pool sizes for external services.
-    ```yaml
-    environment:
-      - MAX_CONNECTIONS=100 # Example: Max connections for a database pool
-      - POOL_SIZE=20      # Example: Initial pool size
-    ```
+```yaml
+environment:
+  - MAX_CONNECTIONS=100 # Example: Max connections for a database pool
+  - POOL_SIZE=20      # Example: Initial pool size
+```
 
 ## Monitoring and Logging
 
