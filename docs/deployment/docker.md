@@ -19,41 +19,41 @@ The RAG System can be deployed using Docker containers for easy setup, consisten
 For local development with hot-reloading and debugging capabilities:
 
 1.  **Clone the repository:**
-    ```bash
+```bash
 git clone <repository-url>
 cd rag-engine # Or your project root directory
-    ```
+```
 
 2.  **Copy environment file:**
-    ```bash
+```bash
 cp .env.example .env
-    ```
-    Edit the `.env` file to configure necessary API keys (e.g., `GOOGLE_API_KEY`, `OPENAI_API_KEY`) and other environment-specific settings.
+```
+Edit the `.env` file to configure necessary API keys (e.g., `GOOGLE_API_KEY`, `OPENAI_API_KEY`) and other environment-specific settings.
 
 3.  **Start the development environment:**
-    ```bash
+```bash
 docker-compose up -d
-    ```
-    This command builds the images (if not already built) and starts the services in detached mode.
+```
+This command builds the images (if not already built) and starts the services in detached mode.
 
 4.  **Check status and logs:**
-    ```bash
+```bash
 docker-compose ps
 docker-compose logs -f rag-engine
-    ```
+```
 
 ### Production Environment
 
 For a production-ready deployment, use the dedicated production Docker Compose file:
 
 1.  **Start the production environment:**
-    ```bash
+```bash
 docker-compose -f docker-compose.prod.yml up -d
-    ```
-    Alternatively, you can use the provided deployment script:
-    ```bash
+```
+Alternatively, you can use the provided deployment script:
+```bash
 ./deployment/scripts/deploy.sh production
-    ```
+```
 
 ## Docker Images
 
@@ -301,33 +301,33 @@ deploy:
     ```
 
 2.  **Read-only Filesystem**: Mount the container's root filesystem as read-only, allowing writes only to specific volumes or `tmpfs`.
-    ```yaml
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /tmp
-      - /var/tmp
-    ```
+```yaml
+security_opt:
+  - no-new-privileges:true
+read_only: true
+tmpfs:
+  - /tmp
+  - /var/tmp
+```
 
 3.  **Network Security**: Configure custom networks with specific subnets and isolation.
-    ```yaml
-    networks:
-      rag-network:
-        driver: bridge
-        ipam:
-          config:
-            - subnet: 172.20.0.0/16
-    ```
+```yaml
+networks:
+  rag-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+```
 
 ### Performance Tuning
 
 1.  **Python Environment Variables**: Optimize Python's behavior for containerized environments.
-    ```yaml
-    environment:
-      - PYTHONUNBUFFERED=1 # Ensures stdout/stderr are unbuffered
-      - PYTHONDONTWRITEBYTECODE=1 # Prevents .pyc file creation
-    ```
+```yaml
+environment:
+  - PYTHONUNBUFFERED=1 # Ensures stdout/stderr are unbuffered
+  - PYTHONDONTWRITEBYTECODE=1 # Prevents .pyc file creation
+```
 
 2.  **Connection Pooling**: Configure connection pool sizes for external services.
     ```yaml
@@ -374,19 +374,19 @@ grafana:
 ### Log Management
 
 1.  **Centralized Logging**: Configure Docker to send logs to a centralized logging solution.
-    ```yaml
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    ```
+```yaml
+logging:
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+```
 
 2.  **Log Rotation**: Implement log rotation to prevent disk space issues.
-    ```bash
-    # Example crontab entry for daily Docker system prune
-    0 2 * * * docker system prune -f --filter "until=24h"
-    ```
+```bash
+# Example crontab entry for daily Docker system prune
+0 2 * * * docker system prune -f --filter "until=24h"
+```
 
 ## Backup and Recovery
 
