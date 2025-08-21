@@ -105,11 +105,11 @@ WantedBy=multi-user.target
 1.  Replace `/path/to/your/rag-engine-directory` with the actual path to your RAG System installation.
 2.  Create a dedicated user and group (e.g., `raguser`).
 3.  Reload `systemd` and enable/start the service:
-    ```bash
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable rag-engine
 sudo systemctl start rag-engine
-    ```
+```
 4.  Check service status and logs:
 ```bash
 sudo systemctl status rag-engine
