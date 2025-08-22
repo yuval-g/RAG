@@ -22,30 +22,30 @@ Before deploying on bare metal, ensure your server meets the following requireme
 ## Installation
 
 1.  **Clone the RAG System Repository:**
-    ```bash
+```bash
 git clone <repository-url>
 cd rag-engine # Or your project root directory
-    ```
+```
 
 2.  **Set up a Python Virtual Environment (Recommended):**
-    ```bash
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
-    ```
+```
 
 3.  **Install Python Dependencies:**
-    ```bash
+```bash
 pip install -e .
 # Or using uv:
 uv sync
-    ```
+```
 
 4.  **Configure Environment Variables:**
     Create a `.env` file based on `.env.example` and populate it with your API keys and other necessary configurations.
-    ```bash
+```bash
 cp .env.example .env
 # Edit .env file
-    ```
+```
 
 For more detailed installation steps, refer to the [Installation Guide](../../getting-started/installation.md).
 
@@ -105,16 +105,16 @@ WantedBy=multi-user.target
 1.  Replace `/path/to/your/rag-engine-directory` with the actual path to your RAG System installation.
 2.  Create a dedicated user and group (e.g., `raguser`).
 3.  Reload `systemd` and enable/start the service:
-    ```bash
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable rag-engine
 sudo systemctl start rag-engine
-    ```
+```
 4.  Check service status and logs:
-    ```bash
+```bash
 sudo systemctl status rag-engine
 sudo journalctl -u rag-engine -f
-    ```
+```
 
 ## Service Management
 
