@@ -26,7 +26,7 @@ class SimpleChatbot:
     def __init__(self, config: PipelineConfig = None):
         """Initialize the chatbot with RAG engine"""
         self.config = config or PipelineConfig(
-            llm_model="gemini-1.5-flash",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.7,
             chunk_size=800,
             retrieval_k=3

@@ -335,7 +335,7 @@ Process a query using the RAG system.
     "metadata": {
       "strategy_used": "multi_query",
       "retrieved_count": 5,
-      "model_used": "gemini-1.5-flash"
+      "model_used": "gemini-2.0-flash-lite"
     }
   }
 }
@@ -487,7 +487,7 @@ Get current system configuration.
   "success": true,
   "data": {
     "llm_provider": "google",
-    "llm_model": "gemini-1.5-flash",
+    "llm_model": "gemini-2.0-flash-lite",
     "embedding_provider": "google",
     "vector_store": "chroma",
     "indexing_strategy": "basic",

@@ -15,7 +15,7 @@ We welcome contributions to the RAG System! This guide outlines the process for 
 
 ## 1. Code of Conduct
 
-This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [email protected].
+This project adheres to a Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to [email protected].
 
 ## 2. How to Contribute
 

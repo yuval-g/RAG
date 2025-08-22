@@ -406,7 +406,7 @@ retrieval:
 # Improve generation quality
 llm:
   temperature: 0.1        # Lower temperature for more factual responses
-  model: "gemini-1.5-pro" # Use higher quality model
+  model: "gemini-2.0-flash-lite" # Use higher quality model
   max_tokens: 500         # Limit response length
 
 # Use better query strategies
@@ -430,7 +430,7 @@ retrieval:
   
 # Optimize generation
 llm:
-  model: "gemini-1.5-flash" # Use faster model
+  model: "gemini-2.0-flash-lite" # Use faster model
   max_tokens: 200           # Shorter responses
   
 # Enable caching
@@ -490,7 +490,7 @@ concurrency:
   
 # Optimize model settings
 llm:
-  model: "gemini-1.5-flash"  # Faster model
+  model: "gemini-2.0-flash-lite"  # Faster model
   
 # Enable GPU if available
 gpu:

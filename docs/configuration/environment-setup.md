@@ -101,7 +101,7 @@ ENABLE_REQUEST_LOGGING=true
 USER_AGENT=rag-engine/1.0
 
 # Optional: Default LLM model and temperature
-DEFAULT_LLM_MODEL=gemini-1.5-flash
+DEFAULT_LLM_MODEL=gemini-2.0-flash-lite
 DEFAULT_TEMPERATURE=0.1
     ```
 

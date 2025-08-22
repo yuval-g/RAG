@@ -146,7 +146,7 @@ api:
 # LLM Configuration
 llm:
   provider: "google"
-  model: "gemini-1.5-flash"
+  model: "gemini-2.0-flash-lite"
   temperature: 0.1
   max_tokens: 1000
   timeout: 30
@@ -231,7 +231,7 @@ config = PipelineConfig(
     
     # LLM Settings
     llm_provider=LLMProvider.GOOGLE,
-    llm_model="gemini-1.5-flash",
+    llm_model="gemini-2.0-flash-lite",
     temperature=0.1,
     max_tokens=1000,
     
@@ -279,7 +279,7 @@ config = PipelineConfig(
 ```yaml
 llm:
   provider: "google"
-  model: "gemini-1.5-flash"  # or "gemini-1.5-pro"
+  model: "gemini-2.0-flash-lite"  # or "gemini-2.0-flash-lite"
   temperature: 0.1
   max_tokens: 1000
   top_p: 0.9
@@ -414,8 +414,8 @@ retrieval:
 ```yaml
 llm:
   # Model selection affects speed vs quality
-  model: "gemini-1.5-flash"  # Fast model
-  # model: "gemini-1.5-pro"   # High-quality model
+  model: "gemini-2.0-flash-lite"  # Fast model
+  # model: "gemini-2.0-flash-lite"   # High-quality model
   
   # Generation parameters
   max_tokens: 500           # Shorter responses are faster
@@ -554,7 +554,7 @@ api:
 
 llm:
   provider: "google"
-  model: "gemini-1.5-flash"
+  model: "gemini-2.0-flash-lite"
   temperature: 0.2
 
 monitoring:
@@ -606,7 +606,7 @@ api:
 
 llm:
   provider: "google"
-  model: "gemini-1.5-pro"
+  model: "gemini-2.0-flash-lite"
   temperature: 0.1
 
 vector_store:

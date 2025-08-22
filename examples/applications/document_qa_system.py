@@ -27,7 +27,7 @@ class DocumentQASystem:
     def __init__(self, config: PipelineConfig = None):
         """Initialize the Q&A system"""
         self.config = config or PipelineConfig(
-            llm_model="gemini-1.5-flash",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.1,  # Lower temperature for factual answers
             chunk_size=1000,
             chunk_overlap=200,
@@ -397,7 +397,7 @@ def create_sample_documents():
             "overlap": 200
         },
         "llm_settings": {
-            "model": "gemini-1.5-flash",
+            "model": "gemini-2.0-flash-lite",
             "temperature": 0.1,
             "max_tokens": 500
         }

@@ -166,7 +166,7 @@ Never hardcode sensitive information like API keys or database credentials direc
 *   **External Secret Management Systems**: For production, integrate with dedicated secret management solutions like HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, or GCP Secret Manager.
 
 **Relevant Documentation:**
-*   [Environment Setup Guide](../configuration/environment-setup.md)
+*   [Environment Setup Guide](../environment-setup.md)
 
 ## 6. Rate Limiting
 

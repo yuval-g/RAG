@@ -225,7 +225,7 @@ from rag_engine.core.config import PipelineConfig, LLMProvider
 # Custom configuration
 config = PipelineConfig(
     llm_provider=LLMProvider.GOOGLE,
-    llm_model="gemini-1.5-pro",
+    llm_model="gemini-2.0-flash-lite",
     temperature=0.1,
     chunk_size=800,
     retrieval_k=5
@@ -508,7 +508,7 @@ python run_examples.py --all
    # config/config.myapp.yaml
    llm:
      provider: "google"
-     model: "gemini-1.5-pro"
+     model: "gemini-2.0-flash-lite"
      temperature: 0.0
    
    retrieval:
