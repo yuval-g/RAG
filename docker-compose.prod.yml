@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # RAG Engine API (Production)
   rag-engine:
