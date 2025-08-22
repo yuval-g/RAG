@@ -33,6 +33,9 @@ class TestMonitoringIntegration:
         
         import src.rag_engine.core.health_api as health_api_module
         health_api_module._health_server = None
+
+        # Clear registered health checks
+        get_monitoring_manager().health_checker.checks.clear()
     
     def teardown_method(self):
         """Cleanup after each test"""

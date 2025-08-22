@@ -37,7 +37,7 @@ class TestQueryProcessorIntegration:
              patch('src.rag_engine.query.step_back.ChatGoogleGenerativeAI'), \
              patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI'):
             return QueryProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0,
                 default_strategy="multi_query"
             )
@@ -51,12 +51,12 @@ class TestQueryProcessorIntegration:
              patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI'):
             
             processor = QueryProcessor(
-                llm_model="gemini-1.5-pro",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.3,
                 default_strategy="rag_fusion"
             )
             
-            assert processor.llm_model == "gemini-1.5-pro"
+            assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.3
             assert processor.default_strategy == "rag_fusion"
             
@@ -69,7 +69,10 @@ class TestQueryProcessorIntegration:
     
     def test_init_failure(self):
         """Test QueryProcessor initialization failure"""
-        with patch('src.rag_engine.query.multi_query.MultiQueryGenerator') as mock_multi:
+        from src.rag_engine.query.multi_query import MultiQueryGenerator
+        
+        # Patch the MultiQueryGenerator class directly to ensure we test the failure handling
+        with patch.object(MultiQueryGenerator, '__init__') as mock_multi:
             mock_multi.side_effect = Exception("Initialization failed")
             
             with pytest.raises(QueryProcessingError):
@@ -371,7 +374,7 @@ class TestQueryProcessorIntegration:
         # Mock configs
         processor.multi_query_generator.get_config = Mock()
         processor.multi_query_generator.get_config.return_value = {
-            "llm_model": "gemini-1.5-flash",
+            "llm_model": "gemini-2.0-flash-lite",
             "temperature": 0.0,
             "num_queries": 5,
             "strategy": "multi_query"
@@ -380,7 +383,7 @@ class TestQueryProcessorIntegration:
         config = processor.get_processor_config("multi_query")
         
         assert config["strategy"] == "multi_query"
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         processor.multi_query_generator.get_config.assert_called_once()
     
     def test_get_processor_config_invalid(self, processor):

@@ -32,7 +32,7 @@ class TestStepBackProcessor:
         """Create a StepBackProcessor instance for testing"""
         with patch('src.rag_engine.query.step_back.ChatGoogleGenerativeAI'):
             return StepBackProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0
             )
     
@@ -40,11 +40,11 @@ class TestStepBackProcessor:
         """Test StepBackProcessor initialization"""
         with patch('src.rag_engine.query.step_back.ChatGoogleGenerativeAI') as mock_llm:
             processor = StepBackProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.2
             )
             
-            assert processor.llm_model == "gemini-1.5-flash"
+            assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.2
             mock_llm.assert_called_once()
     
@@ -333,7 +333,7 @@ class TestStepBackProcessor:
         """Test configuration retrieval"""
         config = processor.get_config()
         
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         assert config["temperature"] == 0.0
         assert config["strategy"] == "step_back"
     

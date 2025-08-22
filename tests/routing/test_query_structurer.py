@@ -128,7 +128,7 @@ class TestQueryStructurer:
         mock_llm_class.return_value = mock_llm
         
         structurer = QueryStructurer()
-        assert structurer.model_name == "gemini-1.5-flash"
+        assert structurer.model_name == "gemini-2.0-flash-lite"
         assert structurer.temperature == 0.0
         assert hasattr(structurer, 'tutorial_analyzer')
         assert hasattr(structurer, 'document_analyzer')

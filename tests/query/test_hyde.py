@@ -32,7 +32,7 @@ class TestHyDEProcessor:
         """Create a HyDEProcessor instance for testing"""
         with patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI'):
             return HyDEProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0,
                 document_style="scientific_paper"
             )
@@ -42,7 +42,7 @@ class TestHyDEProcessor:
         with patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI') as mock_llm:
             processor = HyDEProcessor()
             
-            assert processor.llm_model == "gemini-1.5-flash"
+            assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.0
             assert processor.document_style == "scientific_paper"
             mock_llm.assert_called_once()
@@ -51,12 +51,12 @@ class TestHyDEProcessor:
         """Test HyDEProcessor initialization with custom parameters"""
         with patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI') as mock_llm:
             processor = HyDEProcessor(
-                llm_model="gemini-1.5-pro",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.3,
                 document_style="technical_documentation"
             )
             
-            assert processor.llm_model == "gemini-1.5-pro"
+            assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.3
             assert processor.document_style == "technical_documentation"
             mock_llm.assert_called_once()
@@ -399,7 +399,7 @@ class TestHyDEProcessor:
         """Test configuration retrieval"""
         config = processor.get_config()
         
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         assert config["temperature"] == 0.0
         assert config["document_style"] == "scientific_paper"
         assert config["strategy"] == "hyde"

@@ -329,8 +329,9 @@ class TestRetrievalEngine:
         retrievers = engine.get_available_retrievers()
         
         assert "vector" in retrievers  # Default retriever
+        assert "keyword" in retrievers  # Default keyword retriever
         assert "test_retriever" in retrievers
-        assert len(retrievers) == 2
+        assert len(retrievers) == 3
     
     def test_get_retrieval_stats(self, config, sample_documents):
         """Test getting retrieval engine statistics"""

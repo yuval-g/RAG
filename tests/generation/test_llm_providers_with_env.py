@@ -46,7 +46,7 @@ class TestLLMProvidersWithEnv:
             # Get model info
             model_info = provider.get_model_info()
             assert model_info["provider"] == "google"
-            assert model_info["model"] == "gemini-pro"
+            assert model_info["model"] == "gemini-2.0-flash-lite"
             
             print(f"✅ Google provider created successfully: {model_info}")
             
@@ -94,7 +94,7 @@ class TestLLMProvidersWithEnv:
         
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-1.5-flash",  # Use the model from .env file
+            llm_model="gemini-2.0-flash-lite",  # Use the model from .env file
             temperature=0.1  # Low temperature for consistent results
         )
         

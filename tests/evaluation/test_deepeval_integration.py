@@ -56,7 +56,7 @@ class TestDeepEvalIntegration:
         integration = DeepEvalIntegration()
         models = integration.get_available_models()
         assert "gpt-4" in models
-        assert "gemini-1.5-pro" in models
+        assert "gemini-2.0-flash-lite" in models
         assert "claude-3-opus" in models
     
     @patch('src.rag_engine.evaluation.deepeval_integration.DEEPEVAL_AVAILABLE', True)

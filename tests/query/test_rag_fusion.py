@@ -33,7 +33,7 @@ class TestRAGFusionProcessor:
         """Create a RAGFusionProcessor instance for testing"""
         with patch('src.rag_engine.query.rag_fusion.ChatGoogleGenerativeAI'):
             return RAGFusionProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0,
                 num_queries=4,
                 rrf_k=60
@@ -43,13 +43,13 @@ class TestRAGFusionProcessor:
         """Test RAGFusionProcessor initialization"""
         with patch('src.rag_engine.query.rag_fusion.ChatGoogleGenerativeAI') as mock_llm:
             processor = RAGFusionProcessor(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
                 num_queries=3,
                 rrf_k=50
             )
             
-            assert processor.llm_model == "gemini-1.5-flash"
+            assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.2
             assert processor.num_queries == 3
             assert processor.rrf_k == 50
@@ -294,7 +294,7 @@ class TestRAGFusionProcessor:
         """Test configuration retrieval"""
         config = processor.get_config()
         
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         assert config["temperature"] == 0.0
         assert config["num_queries"] == 4
         assert config["rrf_k"] == 60

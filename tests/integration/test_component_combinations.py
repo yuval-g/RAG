@@ -122,6 +122,12 @@ class TestComponentCombinations:
         mock_semantic_embeddings.return_value = Mock()
         
         mock_vectorstore = Mock()
+        mock_retriever = Mock()
+        mock_retriever.get_relevant_documents.return_value = [
+            Mock(page_content=doc.content, metadata=doc.metadata) 
+            for doc in multi_domain_documents
+        ]
+        mock_vectorstore.as_retriever.return_value = mock_retriever
         mock_chroma.from_documents.return_value = mock_vectorstore
         
         # Initialize components
@@ -190,8 +196,8 @@ class TestComponentCombinations:
                 assert "route" in response.metadata or "strategy" in response.metadata
     
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
-    @patch('src.rag_engine.indexing.indexing_manager.GoogleGenerativeAIEmbeddings')
-    @patch('src.rag_engine.indexing.indexing_manager.Chroma')
+    @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
+    @patch('src.rag_engine.indexing.basic_indexer.Chroma')
     @patch('src.rag_engine.retrieval.reranker.CohereRerank')
     def test_advanced_indexing_with_reranking_combination(self, mock_reranker, mock_chroma, 
                                                         mock_embeddings, mock_llm,

@@ -371,13 +371,6 @@ class TestBenchmarkDatasets:
         # Test system info with Wikipedia content
         system_info = engine.get_system_info()
         assert system_info["stats"]["indexed_documents"] == len(wikipedia_sample_documents)
-        
-        return {
-            "accuracy": accuracy,
-            "correct_answers": correct_answers,
-            "total_questions": total_questions,
-            "avg_confidence": sum(engine.query(tc.question).confidence_score for tc in squad_style_qa_dataset[:3]) / 3
-        }
     
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
@@ -468,12 +461,6 @@ class TestBenchmarkDatasets:
         
         assert topic_matches >= len(retrieval_test_cases) * 0.5  # At least 50% topic matches
         assert high_relevance_matches >= len(retrieval_test_cases) * 0.5  # At least 50% high relevance
-        
-        return {
-            "topic_match_rate": topic_matches / len(retrieval_test_cases),
-            "high_relevance_rate": high_relevance_matches / len(retrieval_test_cases),
-            "results": retrieval_results
-        }
     
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
@@ -565,8 +552,6 @@ class TestBenchmarkDatasets:
         # Verify multi-hop reasoning capability
         assert multi_hop_performance["multiple_source_rate"] >= 0.5  # Should use multiple sources
         assert multi_hop_performance["avg_source_count"] >= 2.0  # Average should be at least 2 sources
-        
-        return multi_hop_performance
     
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
@@ -646,8 +631,6 @@ class TestBenchmarkDatasets:
             # Verify benchmark performance
             assert overall_performance["weighted_average"] >= 0.0
             assert overall_performance["total_test_cases"] > 0
-            
-            return overall_performance
         
         else:
             pytest.skip("No evaluation results available")
@@ -711,9 +694,3 @@ class TestBenchmarkDatasets:
         assert len(test_cases) == 1
         assert documents[0].content == custom_dataset["documents"][0]["content"]
         assert test_cases[0].question == custom_dataset["test_cases"][0]["question"]
-        
-        return {
-            "dataset_path": str(dataset_file),
-            "documents": documents,
-            "test_cases": test_cases
-        }

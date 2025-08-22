@@ -47,7 +47,7 @@ class TestQueryRouter:
         
         router = QueryRouter()
         assert router.default_strategy == RoutingStrategy.AUTO
-        assert router.llm_model == "gemini-1.5-flash"
+        assert router.llm_model == "gemini-2.0-flash-lite"
         assert router.embedding_model == "models/embedding-001"
         assert len(router.routes) == 0
     

@@ -32,7 +32,7 @@ class TestQueryDecomposer:
         """Create a QueryDecomposer instance for testing"""
         with patch('src.rag_engine.query.decomposition.ChatGoogleGenerativeAI'):
             return QueryDecomposer(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0,
                 num_sub_questions=3
             )
@@ -41,12 +41,12 @@ class TestQueryDecomposer:
         """Test QueryDecomposer initialization"""
         with patch('src.rag_engine.query.decomposition.ChatGoogleGenerativeAI') as mock_llm:
             decomposer = QueryDecomposer(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
                 num_sub_questions=4
             )
             
-            assert decomposer.llm_model == "gemini-1.5-flash"
+            assert decomposer.llm_model == "gemini-2.0-flash-lite"
             assert decomposer.temperature == 0.2
             assert decomposer.num_sub_questions == 4
             mock_llm.assert_called_once()
@@ -399,7 +399,7 @@ What are the benefits?"""
         """Test configuration retrieval"""
         config = decomposer.get_config()
         
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         assert config["temperature"] == 0.0
         assert config["num_sub_questions"] == 3
         assert config["strategy"] == "decomposition"

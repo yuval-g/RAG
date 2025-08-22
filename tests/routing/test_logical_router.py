@@ -41,7 +41,7 @@ class TestLogicalRouter:
         """Test router initialization"""
         mock_llm_class.return_value = Mock()
         router = LogicalRouter()
-        assert router.model_name == "gemini-1.5-flash"
+        assert router.model_name == "gemini-2.0-flash-lite"
         assert router.temperature == 0.0
         assert len(router.routes) == 0
         assert router.get_available_routes() == []

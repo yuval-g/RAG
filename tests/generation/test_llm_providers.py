@@ -11,6 +11,25 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Check if optional dependencies are available
+try:
+    import langchain_anthropic
+    HAS_ANTHROPIC = True
+except ImportError:
+    HAS_ANTHROPIC = False
+
+try:
+    import langchain_openai
+    HAS_OPENAI = True
+except ImportError:
+    HAS_OPENAI = False
+
+try:
+    import langchain_community
+    HAS_COMMUNITY = True
+except ImportError:
+    HAS_COMMUNITY = False
+
 from src.rag_engine.generation.llm_providers import (
     GoogleLLMProvider,
     OpenAILLMProvider,
@@ -43,7 +62,7 @@ class TestGoogleLLMProvider:
             provider = GoogleLLMProvider(config)
             
             assert provider.config == config
-            assert provider.model_name == "gemini-pro"
+            assert provider.model_name == "gemini-2.0-flash-lite"
             mock_chat.assert_called_once()
     
     def test_google_provider_model_mapping(self):
@@ -54,18 +73,18 @@ class TestGoogleLLMProvider:
             temperature=0.0
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI') as mock_chat:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_chat:
             provider = GoogleLLMProvider(config)
             
-            # Check that gpt-4 was mapped to gemini-pro
+            # Check that gpt-4 was mapped to gemini-2.0-flash-lite
             call_args = mock_chat.call_args[1]
-            assert call_args["model"] == "gemini-pro"
+            assert call_args["model"] == "gemini-2.0-flash-lite"
     
     def test_google_provider_generate(self):
         """Test Google provider text generation"""
         config = PipelineConfig(llm_provider="google")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI') as mock_chat:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_chat:
             mock_llm = Mock()
             mock_response = Mock()
             mock_response.content = "Generated response"
@@ -82,21 +101,22 @@ class TestGoogleLLMProvider:
         """Test Google provider generation error handling"""
         config = PipelineConfig(llm_provider="google")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI') as mock_chat:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_chat:
             mock_llm = Mock()
             mock_llm.invoke.side_effect = Exception("API Error")
             mock_chat.return_value = mock_llm
             
             provider = GoogleLLMProvider(config)
+            result = provider.generate("Test prompt")
             
-            with pytest.raises(GenerationError):
-                provider.generate("Test prompt")
+            # Should return fallback response when generation fails
+            assert "Generation temporarily unavailable" in result
     
     def test_google_provider_structured_output(self):
         """Test Google provider structured output generation"""
         config = PipelineConfig(llm_provider="google")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI') as mock_chat:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_chat:
             mock_llm = Mock()
             mock_structured_llm = Mock()
             mock_structured_llm.invoke.return_value = {"key": "value"}
@@ -119,12 +139,12 @@ class TestGoogleLLMProvider:
             max_tokens=500
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI'):
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI'):
             provider = GoogleLLMProvider(config)
             info = provider.get_model_info()
             
             assert info["provider"] == "google"
-            assert info["model"] == "gemini-pro"
+            assert info["model"] == "gemini-2.0-flash-lite"
             assert info["temperature"] == 0.7
             assert info["max_tokens"] == 500
 
@@ -132,6 +152,7 @@ class TestGoogleLLMProvider:
 class TestOpenAILLMProvider:
     """Test OpenAI LLM provider"""
     
+    @ pytest.mark.skipif(not HAS_OPENAI, reason="langchain-openai not installed")
     def test_openai_provider_initialization(self):
         """Test OpenAI provider initialization"""
         config = PipelineConfig(
@@ -140,25 +161,27 @@ class TestOpenAILLMProvider:
             temperature=0.5
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatOpenAI') as mock_chat:
+        with patch('langchain_openai.ChatOpenAI') as mock_chat:
             provider = OpenAILLMProvider(config)
             
             assert provider.config == config
             mock_chat.assert_called_once()
     
+    @ pytest.mark.skipif(not HAS_OPENAI, reason="langchain-openai not installed")
     def test_openai_provider_missing_dependency(self):
         """Test OpenAI provider with missing dependency"""
         config = PipelineConfig(llm_provider="openai")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatOpenAI', side_effect=ImportError("No module")):
+        with patch('langchain_openai.ChatOpenAI', side_effect=ImportError("No module")):
             with pytest.raises(ConfigurationError, match="OpenAI not available"):
                 OpenAILLMProvider(config)
     
+    @ pytest.mark.skipif(not HAS_OPENAI, reason="langchain-openai not installed")
     def test_openai_provider_generate(self):
         """Test OpenAI provider text generation"""
         config = PipelineConfig(llm_provider="openai")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatOpenAI') as mock_chat:
+        with patch('langchain_openai.ChatOpenAI') as mock_chat:
             mock_llm = Mock()
             mock_response = Mock()
             mock_response.content = "OpenAI response"
@@ -174,6 +197,7 @@ class TestOpenAILLMProvider:
 class TestAnthropicLLMProvider:
     """Test Anthropic LLM provider"""
     
+    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
     def test_anthropic_provider_initialization(self):
         """Test Anthropic provider initialization"""
         config = PipelineConfig(
@@ -182,12 +206,13 @@ class TestAnthropicLLMProvider:
             temperature=0.3
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatAnthropic') as mock_chat:
+        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
             provider = AnthropicLLMProvider(config)
             
             assert provider.config == config
             mock_chat.assert_called_once()
     
+    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
     def test_anthropic_provider_model_mapping(self):
         """Test Anthropic provider model name mapping"""
         config = PipelineConfig(
@@ -196,18 +221,19 @@ class TestAnthropicLLMProvider:
             temperature=0.0
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatAnthropic') as mock_chat:
+        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
             provider = AnthropicLLMProvider(config)
             
             # Check that gpt-4 was mapped to claude-3-opus
             call_args = mock_chat.call_args[1]
             assert call_args["model"] == "claude-3-opus-20240229"
     
+    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
     def test_anthropic_provider_generate(self):
         """Test Anthropic provider text generation"""
         config = PipelineConfig(llm_provider="anthropic")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatAnthropic') as mock_chat:
+        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
             mock_llm = Mock()
             mock_response = Mock()
             mock_response.content = "Claude response"
@@ -223,6 +249,7 @@ class TestAnthropicLLMProvider:
 class TestLocalLLMProvider:
     """Test Local LLM provider"""
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_local_provider_initialization(self):
         """Test Local provider initialization"""
         config = PipelineConfig(
@@ -231,17 +258,18 @@ class TestLocalLLMProvider:
             temperature=0.5
         )
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama') as mock_ollama:
+        with patch('langchain_community.llms.Ollama') as mock_ollama:
             provider = LocalLLMProvider(config)
             
             assert provider.config == config
             mock_ollama.assert_called_once()
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_local_provider_generate(self):
         """Test Local provider text generation"""
         config = PipelineConfig(llm_provider="local")
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama') as mock_ollama:
+        with patch('langchain_community.llms.Ollama') as mock_ollama:
             mock_llm = Mock()
             mock_llm.invoke.return_value = "Local response"
             mock_ollama.return_value = mock_llm
@@ -251,11 +279,12 @@ class TestLocalLLMProvider:
             
             assert result == "Local response"
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_local_provider_structured_output(self):
         """Test Local provider structured output (JSON parsing)"""
         config = PipelineConfig(llm_provider="local")
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama') as mock_ollama:
+        with patch('langchain_community.llms.Ollama') as mock_ollama:
             mock_llm = Mock()
             mock_llm.invoke.return_value = '{"result": "success"}'
             mock_ollama.return_value = mock_llm
@@ -266,11 +295,12 @@ class TestLocalLLMProvider:
             
             assert result == {"result": "success"}
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_local_provider_structured_output_fallback(self):
         """Test Local provider structured output fallback for invalid JSON"""
         config = PipelineConfig(llm_provider="local")
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama') as mock_ollama:
+        with patch('langchain_community.llms.Ollama') as mock_ollama:
             mock_llm = Mock()
             mock_llm.invoke.return_value = "Invalid JSON response"
             mock_ollama.return_value = mock_llm
@@ -289,39 +319,43 @@ class TestLLMProviderFactory:
         """Test creating Google provider"""
         config = PipelineConfig(llm_provider="google")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI'):
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI'):
             provider = LLMProviderFactory.create_provider("google", config)
             assert isinstance(provider, GoogleLLMProvider)
     
+    @ pytest.mark.skipif(not HAS_OPENAI, reason="langchain-openai not installed")
     def test_create_openai_provider(self):
         """Test creating OpenAI provider"""
         config = PipelineConfig(llm_provider="openai")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatOpenAI'):
+        with patch('langchain_openai.ChatOpenAI'):
             provider = LLMProviderFactory.create_provider("openai", config)
             assert isinstance(provider, OpenAILLMProvider)
     
+    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
     def test_create_anthropic_provider(self):
         """Test creating Anthropic provider"""
         config = PipelineConfig(llm_provider="anthropic")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatAnthropic'):
+        with patch('langchain_anthropic.ChatAnthropic'):
             provider = LLMProviderFactory.create_provider("anthropic", config)
             assert isinstance(provider, AnthropicLLMProvider)
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_create_local_provider(self):
         """Test creating Local provider"""
         config = PipelineConfig(llm_provider="local")
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama'):
+        with patch('langchain_community.llms.Ollama'):
             provider = LLMProviderFactory.create_provider("local", config)
             assert isinstance(provider, LocalLLMProvider)
     
+    @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_create_ollama_alias(self):
         """Test creating provider with ollama alias"""
         config = PipelineConfig(llm_provider="ollama")
         
-        with patch('src.rag_engine.generation.llm_providers.Ollama'):
+        with patch('langchain_community.llms.Ollama'):
             provider = LLMProviderFactory.create_provider("ollama", config)
             assert isinstance(provider, LocalLLMProvider)
     
@@ -387,8 +421,8 @@ class TestProviderConfiguration:
         
         # Check Google config
         google_config = configs["google"]
-        assert "gemini-pro" in google_config["models"]
-        assert google_config["default_model"] == "gemini-pro"
+        assert "gemini-2.0-flash-lite" in google_config["models"]
+        assert google_config["default_model"] == "gemini-2.0-flash-lite"
         assert google_config["supports_structured_output"] is True
         assert google_config["api_key_env"] == "GOOGLE_API_KEY"
     
@@ -468,7 +502,7 @@ class TestProviderIntegration:
             llm_model="gemini-pro"
         )
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI'):
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI'):
             with patch('langchain.hub.pull') as mock_hub:
                 mock_hub.return_value = Mock()
                 
@@ -482,8 +516,8 @@ class TestProviderIntegration:
         """Test switching providers in generation engine"""
         config = PipelineConfig(llm_provider="google")
         
-        with patch('src.rag_engine.generation.llm_providers.ChatGoogleGenerativeAI'):
-            with patch('src.rag_engine.generation.llm_providers.ChatOpenAI'):
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI'):
+            with patch('langchain_openai.ChatOpenAI'):
                 with patch('langchain.hub.pull') as mock_hub:
                     mock_hub.return_value = Mock()
                     

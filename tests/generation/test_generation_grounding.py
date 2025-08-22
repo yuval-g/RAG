@@ -11,7 +11,8 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from src.rag_engine.generation.generation_engine import GenerationEngine, GoogleLLMProvider
+from src.rag_engine.generation.generation_engine import GenerationEngine
+from src.rag_engine.generation.llm_providers import GoogleLLMProvider
 from src.rag_engine.core.models import Document, RAGResponse
 from src.rag_engine.core.config import PipelineConfig
 
@@ -60,7 +61,7 @@ class TestGroundedGeneration:
     @pytest.fixture
     def generation_engine(self, config):
         """Create GenerationEngine instance with mocked LLM"""
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
             engine = GenerationEngine(config)
             engine.llm_provider.llm = mock_llm.return_value
             return engine
@@ -96,7 +97,7 @@ class TestGroundedGeneration:
         query = "What is Python?"
         result = generation_engine.generate_grounded(query, sample_documents)
         
-        assert "I apologize, but I encountered an error" in result
+        assert "Generation temporarily unavailable" in result
     
     def test_generate_with_citations(self, generation_engine, sample_documents):
         """Test citation generation"""
@@ -284,11 +285,8 @@ EXPLANATION: Mostly grounded but contains some unverified information."""
         
         assert isinstance(result, RAGResponse)
         # The error is handled by the citation generation method, not the main handler
-        assert "I apologize, but I encountered an error while generating a response with citations" in result.answer
-        assert result.confidence_score <= 0.3  # Low confidence due to validation error
-        # The validation will also fail and provide error information
-        assert "validation_results" in result.metadata
-        assert result.metadata["validation_results"]["issues"][0].startswith("Validation error:")
+        assert "Generation temporarily unavailable" in result.answer
+        assert result.confidence_score == 0.0  # No confidence due to error
     
     def test_extract_citations_from_response(self, generation_engine):
         """Test citation extraction from response text"""
@@ -313,27 +311,26 @@ class TestGoogleLLMProvider:
         """Create test configuration"""
         return PipelineConfig(
             llm_provider="google",
-            llm_model="gpt-4",  # Should be mapped to gemini-pro
+            llm_model="gemini-2.0-flash-lite",  # Should be mapped to gemini-2.0-flash-lite
             temperature=0.5,
             max_tokens=500
         )
     
     def test_google_llm_provider_initialization(self, config):
         """Test Google LLM provider initialization"""
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
             provider = GoogleLLMProvider(config)
             
             # Verify model mapping
-            mock_llm.assert_called_once_with(
-                model="gemini-pro",
-                temperature=0.5,
-                max_tokens=500
-            )
+            call_kwargs = mock_llm.call_args[1]
+            assert call_kwargs["model"] == "gemini-2.0-flash-lite"
+            assert call_kwargs["temperature"] == 0.5
+            assert call_kwargs["max_tokens"] == 500
             assert provider.config == config
     
     def test_google_llm_provider_generate(self, config):
         """Test text generation with Google LLM provider"""
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
             mock_response = Mock()
             mock_response.content = "Generated response"
             mock_llm.return_value.invoke.return_value = mock_response
@@ -346,25 +343,25 @@ class TestGoogleLLMProvider:
     
     def test_google_llm_provider_generate_error(self, config):
         """Test error handling in Google LLM provider"""
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
             mock_llm.return_value.invoke.side_effect = Exception("API error")
             
             provider = GoogleLLMProvider(config)
             
-            # The provider now re-raises exceptions, so we expect an exception
-            with pytest.raises(Exception, match="API error"):
-                provider.generate("Test prompt")
+            # Should return fallback response when generation fails
+            result = provider.generate("Test prompt")
+            assert "Generation temporarily unavailable" in result
     
     def test_google_llm_provider_model_info(self, config):
         """Test getting model information"""
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI') as mock_llm:
-            mock_llm.return_value.model = "gemini-pro"
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
+            mock_llm.return_value.model = "gemini-2.0-flash-lite"
             
             provider = GoogleLLMProvider(config)
             info = provider.get_model_info()
             
             assert info["provider"] == "google"
-            assert info["model"] == "gemini-pro"
+            assert info["model"] == "gemini-2.0-flash-lite"
             assert info["temperature"] == 0.5
             assert info["max_tokens"] == 500
 
@@ -376,7 +373,7 @@ class TestPromptTemplates:
     def generation_engine(self):
         """Create GenerationEngine instance for testing prompts"""
         config = PipelineConfig()
-        with patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI'):
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI'):
             return GenerationEngine(config)
     
     def test_grounded_prompt_template(self, generation_engine):

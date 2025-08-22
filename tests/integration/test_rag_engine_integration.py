@@ -86,8 +86,9 @@ class TestRAGEngineIntegration:
         assert engine._generator is not None
         assert not engine.is_ready()  # No documents indexed yet
     
-    def test_rag_engine_default_config(self):
+    def test_rag_engine_default_config(self, monkeypatch):
         """Test RAGEngine initialization with default configuration"""
+        monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         with patch('src.rag_engine.core.config.ConfigurationManager') as mock_config_manager:
             mock_config = PipelineConfig()
             mock_config_manager.return_value.load_config.return_value = mock_config

@@ -31,7 +31,7 @@ class TestMultiQueryGenerator:
         """Create a MultiQueryGenerator instance for testing"""
         with patch('src.rag_engine.query.multi_query.ChatGoogleGenerativeAI'):
             return MultiQueryGenerator(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.0,
                 num_queries=5
             )
@@ -40,12 +40,12 @@ class TestMultiQueryGenerator:
         """Test MultiQueryGenerator initialization"""
         with patch('src.rag_engine.query.multi_query.ChatGoogleGenerativeAI') as mock_llm:
             generator = MultiQueryGenerator(
-                llm_model="gemini-1.5-flash",
+                llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
                 num_queries=3
             )
             
-            assert generator.llm_model == "gemini-1.5-flash"
+            assert generator.llm_model == "gemini-2.0-flash-lite"
             assert generator.temperature == 0.2
             assert generator.num_queries == 3
             mock_llm.assert_called_once()
@@ -220,7 +220,7 @@ What are the methods for decomposing tasks?"""
         """Test configuration retrieval"""
         config = generator.get_config()
         
-        assert config["llm_model"] == "gemini-1.5-flash"
+        assert config["llm_model"] == "gemini-2.0-flash-lite"
         assert config["temperature"] == 0.0
         assert config["num_queries"] == 5
         assert config["strategy"] == "multi_query"

@@ -222,7 +222,7 @@ class TestRoutingIntegration:
             reasoning="High confidence Python classification",
             metadata={
                 "router_type": "logical",
-                "model_used": "gemini-1.5-flash",
+                "model_used": "gemini-2.0-flash-lite",
                 "processing_time": 0.123
             }
         )

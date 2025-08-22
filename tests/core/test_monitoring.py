@@ -5,7 +5,7 @@ Tests for the monitoring system
 import pytest
 import time
 import threading
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch, MagicMock
 
 from src.rag_engine.core.monitoring import (
@@ -27,7 +27,7 @@ class TestMetricPoint:
     
     def test_metric_point_creation(self):
         """Test metric point creation"""
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(timezone.utc)
         labels = {"service": "test", "version": "1.0"}
         
         point = MetricPoint(timestamp=timestamp, value=42.5, labels=labels)
@@ -38,7 +38,7 @@ class TestMetricPoint:
     
     def test_metric_point_default_labels(self):
         """Test metric point with default labels"""
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(timezone.utc)
         point = MetricPoint(timestamp=timestamp, value=10.0)
         
         assert point.labels == {}
@@ -49,7 +49,7 @@ class TestHealthStatus:
     
     def test_health_status_creation(self):
         """Test health status creation"""
-        timestamp = datetime.utcnow()
+        timestamp = datetime.now(timezone.utc)
         checks = {"database": True, "cache": False}
         
         status = HealthStatus(
