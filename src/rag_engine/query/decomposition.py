@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ..core.models import Document, ProcessedQuery
 from ..core.exceptions import QueryProcessingError
+from ..common.utils import get_llm
 
 
 class QueryDecomposer:
@@ -22,7 +23,7 @@ class QueryDecomposer:
     
     def __init__(
         self,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         num_sub_questions: int = 3,
         **llm_kwargs
@@ -40,13 +41,9 @@ class QueryDecomposer:
         self.temperature = temperature
         self.num_sub_questions = num_sub_questions
         self.llm_kwargs = llm_kwargs
-        
+
         # Initialize the LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=llm_model,
-            temperature=temperature,
-            **llm_kwargs
-        )
+        self.llm = get_llm(llm_model, temperature, **llm_kwargs)
         
         # Create the prompt template for decomposition
         self.decomposition_prompt = self._create_decomposition_prompt()

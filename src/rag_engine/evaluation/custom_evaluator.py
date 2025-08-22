@@ -20,7 +20,7 @@ class ResultScore(BaseModel):
 class CustomEvaluator(BaseEvaluator):
     """Custom evaluator with LLM-based judges for faithfulness and correctness"""
     
-    def __init__(self, model_name: str = "gemini-1.5-pro", temperature: float = 0.0):
+    def __init__(self, model_name: str = "gemini-2.0-flash-lite", temperature: float = 0.0):
         """Initialize the custom evaluator with Google Gemini LLM"""
         self.llm = ChatGoogleGenerativeAI(
             model=model_name,

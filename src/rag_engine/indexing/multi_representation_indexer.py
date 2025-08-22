@@ -46,7 +46,7 @@ class MultiRepresentationIndexer(BaseIndexer):
         # Initialize Google Gemini LLM for summarization
         self.llm = ChatGoogleGenerativeAI(
             model=config.llm_model if config.llm_model != "gpt-3.5-turbo" 
-                  else "gemini-1.5-flash",  # Default Google model
+                  else "gemini-2.0-flash-lite",  # Default Google model
             temperature=config.temperature
         )
         

@@ -16,6 +16,7 @@ from langchain_core.runnables import RunnablePassthrough
 from ..core.models import Document, RAGResponse
 from ..core.config import PipelineConfig
 from ..core.exceptions import RetrievalError, GenerationError
+from ..common.utils import get_llm
 
 
 logger = logging.getLogger(__name__)
@@ -64,10 +65,7 @@ class CRAGRelevanceChecker:
             config: Pipeline configuration
         """
         self.config = config
-        self.llm = ChatGoogleGenerativeAI(
-            model=config.llm_model or "gemini-2.0-flash-lite",
-            temperature=0.0  # Use low temperature for consistent grading
-        )
+        self.llm = get_llm(config.llm_model, 0.0)
         
         # Relevance grading prompt
         self.relevance_prompt = PromptTemplate(
@@ -213,10 +211,7 @@ class SelfRAGValidator:
             config: Pipeline configuration
         """
         self.config = config
-        self.llm = ChatGoogleGenerativeAI(
-            model=config.llm_model or "gemini-2.0-flash-lite",
-            temperature=0.0  # Use low temperature for consistent validation
-        )
+        self.llm = get_llm(config.llm_model, 0.0)
         
         # Factuality grading prompt
         self.factuality_prompt = PromptTemplate(

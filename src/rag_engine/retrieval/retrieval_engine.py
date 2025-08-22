@@ -61,23 +61,24 @@ class RetrievalEngine:
     def _setup_reranker(self):
         """Setup the re-ranker based on configuration"""
         try:
-            # Get the base retriever for contextual compression
-            base_retriever = self.retrievers.get(self.default_retriever_name)
+            reranker_strategy = self.config.reranker_model or "llm"
             
-            if hasattr(base_retriever, '_retriever') and base_retriever._retriever is not None:
-                # Use contextual compression strategy with LangChain retriever
-                self.reranker = ReRanker(
-                    strategy="contextual",
-                    base_retriever=base_retriever._retriever,
-                    config=self.config
-                )
+            if reranker_strategy == "cohere":
+                self.reranker = ReRanker(strategy="cohere", config=self.config)
+            elif reranker_strategy == "contextual":
+                base_retriever = self.retrievers.get(self.default_retriever_name)
+                if hasattr(base_retriever, '_retriever') and base_retriever._retriever is not None:
+                    self.reranker = ReRanker(
+                        strategy="contextual",
+                        base_retriever=base_retriever._retriever,
+                        config=self.config
+                    )
+                else:
+                    logger.warning("Contextual reranker requires a base retriever with a `_retriever` attribute. Falling back to LLM reranker.")
+                    self.reranker = ReRanker(strategy="llm", config=self.config)
             else:
-                # Use LLM-based re-ranking strategy
-                self.reranker = ReRanker(
-                    strategy="llm",
-                    config=self.config
-                )
-            
+                self.reranker = ReRanker(strategy="llm", config=self.config)
+
             logger.info(f"Re-ranker setup complete with strategy: {self.reranker.get_strategy()}")
             
         except Exception as e:

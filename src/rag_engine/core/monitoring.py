@@ -69,10 +69,17 @@ class MetricsCollector:
         self.record_histogram(f"{name}_duration_seconds", duration, labels)
         self.record_counter(f"{name}_total", 1.0, labels)
     
-    def get_metric_summary(self, name: str, labels: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    def get_metric_summary(self, name: str, labels: Optional[Dict[str, str]] = None, ignore_labels: bool = False) -> Dict[str, Any]:
         """Get summary statistics for a metric"""
-        key = self._make_key(name, labels)
-        points = list(self.metrics[key])
+        if ignore_labels:
+            all_points = []
+            for key, points in self.metrics.items():
+                if key.startswith(name):
+                    all_points.extend(list(points))
+            points = all_points
+        else:
+            key = self._make_key(name, labels)
+            points = list(self.metrics[key])
         
         if not points:
             return {}
@@ -354,8 +361,9 @@ class RAGMetricsCollector:
         summary = {}
         
         # Response time statistics
-        response_time_summary = self.metrics.get_metric_summary("rag_query_duration_seconds")
+        response_time_summary = self.metrics.get_metric_summary("rag_query_duration_seconds", ignore_labels=True)
         if response_time_summary:
+            summary["avg_response_time"] = response_time_summary.get("avg", 0)
             summary["response_time"] = {
                 "avg_seconds": response_time_summary.get("avg", 0),
                 "min_seconds": response_time_summary.get("min", 0),
@@ -364,8 +372,9 @@ class RAGMetricsCollector:
             }
         
         # Accuracy statistics
-        confidence_summary = self.metrics.get_metric_summary("rag_confidence_score")
+        confidence_summary = self.metrics.get_metric_summary("rag_confidence_score", ignore_labels=True)
         if confidence_summary:
+            summary["avg_confidence_score"] = confidence_summary.get("avg", 0)
             summary["accuracy"] = {
                 "avg_confidence": confidence_summary.get("avg", 0),
                 "min_confidence": confidence_summary.get("min", 0),

@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ..core.models import Document, ProcessedQuery
 from ..core.exceptions import QueryProcessingError
+from ..common.utils import get_llm
 
 
 class HyDEProcessor:
@@ -25,7 +26,7 @@ class HyDEProcessor:
     
     def __init__(
         self,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         document_style: str = "scientific_paper",
         **llm_kwargs
@@ -43,13 +44,9 @@ class HyDEProcessor:
         self.temperature = temperature
         self.document_style = document_style
         self.llm_kwargs = llm_kwargs
-        
+
         # Initialize the LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=llm_model,
-            temperature=temperature,
-            **llm_kwargs
-        )
+        self.llm = get_llm(llm_model, temperature, **llm_kwargs)
         
         # Create the prompt template for hypothetical document generation
         self.hyde_prompt = self._create_hyde_prompt()

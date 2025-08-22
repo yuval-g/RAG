@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ..core.models import ProcessedQuery
 from ..core.exceptions import QueryProcessingError
+from ..common.utils import get_llm
 
 
 class MultiQueryGenerator:
@@ -23,7 +24,7 @@ class MultiQueryGenerator:
     
     def __init__(
         self,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         num_queries: int = 5,
         **llm_kwargs
@@ -41,13 +42,9 @@ class MultiQueryGenerator:
         self.temperature = temperature
         self.num_queries = num_queries
         self.llm_kwargs = llm_kwargs
-        
+
         # Initialize the LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=llm_model,
-            temperature=temperature,
-            **llm_kwargs
-        )
+        self.llm = get_llm(llm_model, temperature, **llm_kwargs)
         
         # Create the prompt template based on workplan implementation
         self.prompt_template = self._create_prompt_template()

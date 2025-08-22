@@ -4,6 +4,7 @@ Embedding provider implementations for the RAG system
 
 from typing import List, Dict, Any, Optional
 import logging
+import os
 from abc import ABC, abstractmethod
 
 from .interfaces import BaseEmbeddingProvider
@@ -48,11 +49,42 @@ class OpenAIEmbeddingProvider(BaseEmbeddingProvider):
         # Initialize the client
         self._initialize_client()
     
+    import os
+from openai import OpenAI # Moved to top level for easier mocking
+
+
+class OpenAIEmbeddingProvider(BaseEmbeddingProvider):
+    """OpenAI embedding provider implementation"""
+    
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: str = "text-embedding-ada-002",
+        dimensions: Optional[int] = None,
+        **kwargs
+    ):
+        """
+        Initialize OpenAI embedding provider
+        
+        Args:
+            api_key: OpenAI API key (if None, will use environment variable)
+            model: OpenAI embedding model name
+            dimensions: Embedding dimensions (for newer models)
+            **kwargs: Additional parameters for the embedding model
+        """
+        self.api_key = api_key
+        self.model = model
+        self.dimensions = dimensions
+        self.kwargs = kwargs
+        self._client = None
+        self._embedding_dimension = None
+        
+        # Initialize the client
+        self._initialize_client()
+    
     def _initialize_client(self):
         """Initialize the OpenAI client"""
         try:
-            from openai import OpenAI
-            import os
             
             # Use provided API key or get from environment
             api_key = self.api_key or os.getenv("OPENAI_API_KEY")

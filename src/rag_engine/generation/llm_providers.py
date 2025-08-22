@@ -42,9 +42,9 @@ class GoogleLLMProvider(BaseLLMProvider):
                 "gpt-3.5-turbo": "gemini-2.0-flash-lite",
                 "gpt-4": "gemini-2.0-flash-lite",
                 "gpt-4-turbo": "gemini-2.0-flash-lite",
-                "gemini-pro": "gemini-2.0-flash-lite",  # Legacy mapping
-                "gemini-1.5-pro": "gemini-1.5-pro",
-                "gemini-1.5-flash": "gemini-1.5-flash",
+                "gemini-pro": "gemini-2.0-flash-lite",
+                "gemini-2.0-flash-lite": "gemini-2.0-flash-lite",
+                "gemini-2.0-flash-lite": "gemini-2.0-flash-lite",
                 "gemini-2.0-flash-lite": "gemini-2.0-flash-lite"
             }
             
@@ -658,7 +658,7 @@ def get_default_provider_config() -> Dict[str, Dict[str, Any]]:
     """
     return {
         "google": {
-            "models": ["gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-pro"],
+            "models": ["gemini-2.0-flash-lite", "gemini-2.0-flash-lite", "gemini-2.0-flash-lite", "gemini-pro"],
             "default_model": "gemini-2.0-flash-lite",
             "supports_structured_output": True,
             "api_key_env": "GOOGLE_API_KEY"

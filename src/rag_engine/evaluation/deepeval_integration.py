@@ -37,11 +37,11 @@ from ..core.models import TestCase, RAGResponse, EvaluationResult
 class DeepEvalIntegration(BaseEvaluator):
     """Integration with DeepEval framework for standardized metrics"""
     
-    def __init__(self, model_name: str = "gemini-1.5-pro"):
+    def __init__(self, model_name: str = "gemini-2.0-flash-lite"):
         """Initialize DeepEval integration
         
         Args:
-            model_name: LLM model to use for evaluation (default: gemini-1.5-pro)
+            model_name: LLM model to use for evaluation (default: gemini-2.0-flash-lite)
         """
         if not DEEPEVAL_AVAILABLE:
             raise ImportError(
@@ -293,8 +293,8 @@ class DeepEvalIntegration(BaseEvaluator):
             "gpt-4",
             "gpt-4-turbo",
             "gpt-3.5-turbo",
-            "gemini-1.5-pro",
-            "gemini-1.5-flash",
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash-lite",
             "claude-3-opus",
             "claude-3-sonnet"
         ]

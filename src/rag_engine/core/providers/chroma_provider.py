@@ -12,8 +12,7 @@ from ..vector_store_providers import VectorStoreProvider
 from ..models import Document
 from ..config import PipelineConfig
 from ..exceptions import VectorStoreError, ExternalServiceError
-from ..resilience import resilient_call, ExternalServiceError
-from ..resilience import resilient_c
+from ..resilience import resilient_call
 
 logger = logging.getLogger(__name__)
 

@@ -32,6 +32,14 @@ class PerformanceMetrics:
 
 
 @dataclass
+class CacheConfig:
+    """Configuration for the caching system"""
+    max_size: int = 1000
+    ttl_seconds: float = 3600.0
+    enable_persistence: bool = False
+    persistence_file: Optional[str] = None
+
+@dataclass
 class ConnectionPoolConfig:
     """Configuration for connection pooling"""
     max_connections: int = 10

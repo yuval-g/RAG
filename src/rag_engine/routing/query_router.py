@@ -29,7 +29,7 @@ class QueryRouter(BaseRouter):
     def __init__(
         self,
         default_strategy: RoutingStrategy = RoutingStrategy.AUTO,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         embedding_model: str = "models/embedding-001",
         routes: List[RouteConfig] = None
     ):

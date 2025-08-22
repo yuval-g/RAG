@@ -49,6 +49,7 @@ class EvaluationResult(BaseModel):
 
 class EvaluationTestCase(BaseModel):
     """Test case for evaluation"""
+    __test__ = False
     model_config = ConfigDict(arbitrary_types_allowed=True)
     
     question: str

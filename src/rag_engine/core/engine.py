@@ -86,20 +86,23 @@ class RAGEngine(BaseRAGEngine):
             # Calculate basic confidence score based on number of retrieved docs
             confidence_score = min(len(retrieved_docs) / self.config.retrieval_k, 1.0)
             
+            metadata = {
+                "query": question,
+                "retrieved_count": len(retrieved_docs),
+                "config": {
+                    "llm_provider": self.config.llm_provider,
+                    "embedding_provider": self.config.embedding_provider,
+                    "vector_store": self.config.vector_store
+                }
+            }
+            metadata.update(kwargs)
+
             response = RAGResponse(
                 answer=answer,
                 source_documents=retrieved_docs,
                 confidence_score=confidence_score,
                 processing_time=time.time() - start_time,
-                metadata={
-                    "query": question,
-                    "retrieved_count": len(retrieved_docs),
-                    "config": {
-                        "llm_provider": self.config.llm_provider,
-                        "embedding_provider": self.config.embedding_provider,
-                        "vector_store": self.config.vector_store
-                    }
-                }
+                metadata=metadata
             )
             
             logger.info(f"Query processed successfully in {response.processing_time:.2f}s")
@@ -155,18 +158,22 @@ class RAGEngine(BaseRAGEngine):
         """Evaluate the RAG system"""
         try:
             logger.info(f"Evaluating system with {len(test_cases)} test cases")
+
+            if self._evaluator is None:
+                from ..evaluation.evaluation_manager import EvaluationManager
+                self._evaluator = EvaluationManager()
+
+            responses = [self.query(tc.question) for tc in test_cases]
+
+            results_dict = self._evaluator.evaluate_comprehensive(test_cases, responses)
             
-            # For now, return a basic evaluation result
-            # This will be implemented in later tasks
-            result = EvaluationResult(
-                overall_score=0.0,
-                metric_scores={},
-                test_case_results=[],
-                recommendations=["Complete the remaining implementation tasks"]
+            # Convert dict to EvaluationResult object
+            return EvaluationResult(
+                overall_score=results_dict.get('evaluation_summary', {}).get('overall_score', 0.0),
+                metric_scores=results_dict.get('aggregated_metrics', {}),
+                test_case_results=results_dict.get('test_case_analysis', {}).get('case_performance', []),
+                recommendations=results_dict.get('recommendations', [])
             )
-            
-            logger.info("Evaluation completed")
-            return result
             
         except Exception as e:
             logger.error(f"Error during evaluation: {str(e)}")

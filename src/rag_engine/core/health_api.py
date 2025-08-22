@@ -5,7 +5,7 @@ Health check API endpoints for monitoring system status
 import json
 import time
 from typing import Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
 import urllib.parse
@@ -81,7 +81,7 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
         metrics_summary = self.monitoring_manager.get_metrics_summary()
         
         response = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "metrics": metrics_summary
         }
         
@@ -101,7 +101,7 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
         rag_summary = self.monitoring_manager.get_rag_performance_summary()
         
         response = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "rag_performance": rag_summary
         }
         
@@ -113,7 +113,7 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
         rag_summary = self.monitoring_manager.get_rag_performance_summary()
         
         response = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "health": {
                 "status": health_status.status,
                 "message": health_status.message,

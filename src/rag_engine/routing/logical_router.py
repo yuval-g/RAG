@@ -10,6 +10,7 @@ from langchain_core.runnables import RunnableLambda
 
 from ..core.interfaces import BaseRouter
 from ..core.models import RoutingDecision, RouteConfig
+from ..common.utils import get_llm
 
 
 class RouteQuery(BaseModel):
@@ -39,7 +40,7 @@ class LogicalRouter(BaseRouter):
     
     def __init__(
         self,
-        model_name: str = "gemini-1.5-flash",
+        model_name: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         routes: List[RouteConfig] = None
     ):

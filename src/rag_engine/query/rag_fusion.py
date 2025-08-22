@@ -10,6 +10,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ..core.models import Document, ProcessedQuery
 from ..core.exceptions import QueryProcessingError
+from ..common.utils import get_llm
 
 
 class RAGFusionProcessor:
@@ -24,7 +25,7 @@ class RAGFusionProcessor:
     
     def __init__(
         self,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         num_queries: int = 4,
         rrf_k: int = 60,
@@ -45,13 +46,9 @@ class RAGFusionProcessor:
         self.num_queries = num_queries
         self.rrf_k = rrf_k
         self.llm_kwargs = llm_kwargs
-        
+
         # Initialize the LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=llm_model,
-            temperature=temperature,
-            **llm_kwargs
-        )
+        self.llm = get_llm(llm_model, temperature, **llm_kwargs)
         
         # Create the prompt template for RAG-Fusion
         self.prompt_template = self._create_prompt_template()

@@ -21,6 +21,7 @@ try:
         answer_correctness,
     )
     from datasets import Dataset
+    from langchain_google_genai import ChatGoogleGenerativeAI
     RAGAS_AVAILABLE = True
 except ImportError:
     RAGAS_AVAILABLE = False
@@ -265,9 +266,7 @@ class RAGASIntegration(BaseEvaluator):
                         }
                     }
                     test_case_results.append(case_result)
-                
                 metric_scores = {"ragas_score": 0.5}
-        
         except Exception as e:
             logging.error(f"Error processing RAGAS DataFrame: {str(e)}")
             # Fallback processing

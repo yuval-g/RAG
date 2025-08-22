@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ..core.models import Document, ProcessedQuery
 from ..core.exceptions import QueryProcessingError
+from ..common.utils import get_llm
 
 
 class StepBackProcessor:
@@ -23,7 +24,7 @@ class StepBackProcessor:
     
     def __init__(
         self,
-        llm_model: str = "gemini-1.5-flash",
+        llm_model: str = "gemini-2.0-flash-lite",
         temperature: float = 0.0,
         **llm_kwargs
     ):
@@ -38,13 +39,9 @@ class StepBackProcessor:
         self.llm_model = llm_model
         self.temperature = temperature
         self.llm_kwargs = llm_kwargs
-        
+
         # Initialize the LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=llm_model,
-            temperature=temperature,
-            **llm_kwargs
-        )
+        self.llm = get_llm(llm_model, temperature, **llm_kwargs)
         
         # Create the step-back prompt with few-shot examples
         self.step_back_prompt = self._create_step_back_prompt()
