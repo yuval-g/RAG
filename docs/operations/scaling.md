@@ -29,20 +29,22 @@ Horizontal scaling involves adding more instances of your application or service
 ### 2.1. Scaling the RAG API Server
 
 *   **Docker Compose**: Use `deploy.replicas` in a `docker-compose.override.yml` to run multiple instances of the `rag-engine` service.
-    ```yaml
-    # docker-compose.override.yml
-    version: '3.8'
-    services:
-      rag-engine:
-        deploy:
-          replicas: 3 # Scale to 3 instances
-    ```
+```yaml
+# docker-compose.override.yml
+version: '3.8'
+services:
+  rag-engine:
+    deploy:
+      replicas: 3 # Scale to 3 instances
+
+```
 *   **Kubernetes**: Configure the `replicas` field in your Deployment manifest or use a Horizontal Pod Autoscaler (HPA).
-    ```yaml
-    # Kubernetes Deployment snippet
-    spec:
-      replicas: 3 # Start with 3 replicas
-    ```
+```yaml
+# Kubernetes Deployment snippet
+spec:
+  replicas: 3 # Start with 3 replicas
+
+```
 
 ### 2.2. Load Balancing
 
@@ -69,14 +71,15 @@ Vertical scaling involves increasing the resources (CPU, RAM) of existing instan
 
 *   **VMs/Bare Metal**: Upgrade the server hardware (CPU, RAM).
 *   **Docker**: Adjust resource limits in `docker-compose.yml`.
-    ```yaml
-    # Docker Compose resource limits
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4G
-    ```
+```yaml
+# Docker Compose resource limits
+deploy:
+  resources:
+    limits:
+      cpus: '2.0'
+      memory: 4G
+
+```
 *   **Kubernetes**: Adjust resource requests and limits in Deployment manifests or use a Vertical Pod Autoscaler (VPA).
 
 **Relevant Documentation:**

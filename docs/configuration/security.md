@@ -61,18 +61,20 @@ Protecting your data at rest and in transit is paramount.
 ### Encryption
 
 *   **Encryption at Rest**: Ensure that data stored in your vector database (e.g., Chroma persistent directory, Pinecone/Weaviate data) and any other persistent storage is encrypted. Most cloud providers offer disk encryption by default or as an option.
-    ```yaml
+```yaml
 security:
   encryption:
-    enable_at_rest: true
-    algorithm: "AES-256" # Example, actual implementation depends on storage
-    ```
+enable_at_rest: true
+algorithm: "AES-256" # Example, actual implementation depends on storage
+
+```
 *   **Encryption in Transit (HTTPS/TLS)**: All communication with the RAG API should use HTTPS to encrypt data in transit.
-    ```yaml
+```yaml
 security:
   encryption:
-    enable_in_transit: true
-    ```
+enable_in_transit: true
+
+```
 
 ### Data Privacy (PII Detection & Masking)
 
@@ -182,7 +184,7 @@ security:
 ```
 
 **Relevant Documentation:**
-*   [Error Handling and Resilience](../../error_handling_and_resilience.md) (details on Rate Limiter implementation)
+*   [Error Handling and Resilience](../development/error_handling_and_resilience.md) (details on Rate Limiter implementation)
 
 ## 7. Input Validation and Sanitization
 

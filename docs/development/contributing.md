@@ -52,27 +52,32 @@ Follow these steps to submit your code contributions:
 
 1.  **Fork the Repository**: Fork the `rag-engine` repository on GitHub.
 2.  **Clone Your Fork**: Clone your forked repository to your local machine.
-    ```bash
+```bash
 git clone https://github.com/<your-username>/rag-engine.git
 cd rag-engine
-    ```
+
+```
 3.  **Create a New Branch**: Create a new branch for your feature or bug fix.
-    ```bash
+```bash
 git checkout -b feature/my-new-feature
-    ```
+
+```
 4.  **Make Your Changes**: Implement your changes, ensuring they adhere to coding standards and are covered by tests.
 5.  **Run Tests**: Before committing, run all tests to ensure no regressions are introduced.
-    ```bash
+```bash
 uv run python -m pytest
-    ```
+
+```
 6.  **Commit Your Changes**: Write clear and concise commit messages.
-    ```bash
+```bash
 git commit -m "feat: Add new feature for X"
-    ```
+
+```
 7.  **Push to Your Fork**: Push your branch to your forked repository.
-    ```bash
+```bash
 git push origin feature/my-new-feature
-    ```
+
+```
 8.  **Create a Pull Request (PR)**: Open a pull request from your branch to the `main` branch of the upstream repository. Provide a clear description of your changes and reference any related issues.
 
 ## 7. Issue Reporting

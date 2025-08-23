@@ -25,7 +25,6 @@ Providers are abstract interfaces for external services with multiple implementa
 ### LLM Providers
 - **OpenAIProvider**: Connects to OpenAI models
 - **GoogleProvider**: Connects to Google Gemini models
-- **AnthropicProvider**: (Planned) Connects to Anthropic models
 
 ### Embedding Providers
 - **OpenAIEmbeddingProvider**: OpenAI text embeddings

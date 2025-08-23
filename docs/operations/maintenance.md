@@ -23,42 +23,47 @@ These tasks should be performed periodically to keep the RAG System running opti
 Logs can consume significant disk space over time. Implement a log rotation strategy.
 
 *   **Cleanup Old Logs**: Regularly remove log files older than a certain period (e.g., 7 or 30 days).
-    ```bash
-    # Example: Delete logs older than 7 days
-    find /path/to/rag-engine/logs -name "*.log" -mtime +7 -delete
-    ```
+```bash
+# Example: Delete logs older than 7 days
+find /path/to/rag-engine/logs -name "*.log" -mtime +7 -delete
+
+```
 *   **Configure Log Rotation**: For Docker, configure log drivers. For bare-metal, use `logrotate`.
-    ```yaml
-    # Example Docker Compose logging configuration
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m" # Max size of the log file before rotation
-        max-file: "3"   # Max number of log files to keep
-    ```
+```yaml
+# Example Docker Compose logging configuration
+logging:
+  driver: "json-file"
+  options:
+    max-size: "10m" # Max size of the log file before rotation
+    max-file: "3"   # Max number of log files to keep
+
+```
 
 ### 1.2. Temporary File Cleanup
 
 Ensure temporary directories are regularly cleared to prevent disk space issues.
 
 *   **Cleanup `/tmp` and `/var/tmp`**: If your application uses these directories, ensure they are managed.
-    ```bash
-    # Example: Clean up temporary files older than 1 day
-    find /tmp -type f -mtime +1 -delete
-    ```
+```bash
+# Example: Clean up temporary files older than 1 day
+find /tmp -type f -mtime +1 -delete
+
+```
 
 ### 1.3. Docker/Container Cleanup (if applicable)
 
 If deploying with Docker, regularly prune unused Docker objects.
 
 *   **Prune System**: Remove stopped containers, unused networks, dangling images, and build cache.
-    ```bash
-    docker system prune -f
-    ```
+```bash
+docker system prune -f
+
+```
 *   **Prune Volumes**: Remove unused local volumes (use with caution, ensure volumes are truly unused).
-    ```bash
-    docker volume prune -f
-    ```
+```bash
+docker volume prune -f
+
+```
 
 ### 1.4. Database Maintenance (ChromaDB, Redis)
 

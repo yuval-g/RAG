@@ -60,19 +60,20 @@ Follow Python's standard naming conventions (PEP 8):
 ## 5. Docstrings and Comments
 
 *   **Docstrings**: All modules, classes, and public functions/methods should have docstrings. Use [Google Style Docstrings](https://google.github.io/styleguide/pyguide.html#pyguide-python-language-rules-and-python-style) for consistency.
-    ```python
-    def my_function(arg1: str, arg2: int) -> bool:
-        """Brief description of what the function does.
+```python
+def my_function(arg1: str, arg2: int) -> bool:
+    """Brief description of what the function does.
 
-        Args:
-            arg1: Description of arg1.
-            arg2: Description of arg2.
+    Args:
+        arg1: Description of arg1.
+        arg2: Description of arg2.
 
-        Returns:
-            Description of the return value.
-        """
-        # ... code
-    ```
+    Returns:
+        Description of the return value.
+    """
+    # ... code
+
+```
 *   **Comments**: Use comments sparingly to explain *why* a piece of code exists or *why* a particular approach was taken, rather than *what* the code does (which should be clear from the code itself).
 
 ## 6. Type Hinting

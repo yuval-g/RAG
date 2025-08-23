@@ -817,7 +817,6 @@ logging.basicConfig(
 **A:** Choose based on your needs:
 - **Google Gemini**: Good balance of quality and cost, fast inference
 - **OpenAI GPT**: High quality, good for complex reasoning
-- **Anthropic Claude**: Good for safety-critical applications
 - **Local models**: For privacy-sensitive applications
 
 ### Q: How do I improve response quality?

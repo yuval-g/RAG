@@ -144,9 +144,10 @@ def test_simple_query(mock_rag_engine):
 Aim for high test coverage, especially for core logic and critical paths. While 100% coverage is not always practical or necessary, strive for a good balance that ensures confidence in the codebase.
 
 *   Use tools like `pytest-cov` to measure test coverage.
-    ```bash
+```bash
 uv run python -m pytest --cov=src --cov-report=term-missing
-    ```
+
+```
 
 ## 7. Continuous Integration (CI)
 
