@@ -10,7 +10,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv()  # Keep for backward compatibility
 
 # Add the src directory to the path so we can import our modules
 sys.path.append(str(Path(__file__).parent.parent / "src"))

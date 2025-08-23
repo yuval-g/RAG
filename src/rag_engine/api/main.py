@@ -6,6 +6,10 @@ import os
 import logging
 from typing import Optional
 
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
+
 import uvicorn
 from .app import create_app
 

@@ -10,6 +10,11 @@ import json
 from pathlib import Path
 from enum import Enum
 import logging
+
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
+
 from pydantic import BaseModel, Field, field_validator, ValidationError, ConfigDict
 
 

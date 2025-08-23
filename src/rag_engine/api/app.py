@@ -8,6 +8,10 @@ from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
 
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse

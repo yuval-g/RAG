@@ -10,6 +10,10 @@ import logging
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
+
 import click
 from rich.console import Console
 from rich.table import Table
