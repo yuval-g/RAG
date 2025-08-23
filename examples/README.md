@@ -22,10 +22,24 @@ This directory contains example applications and use cases demonstrating how to 
    uv sync
    ```
 
-2. **Set Environment Variables**:
+2. **Choose Your Setup**:
+
+   **Option A: With API Keys (Full functionality)**
    ```bash
    export GOOGLE_API_KEY="your_google_api_key"
-   
+   ```
+
+   **Option B: Without API Keys (Perfect for testing/demos)**
+   ```bash
+   # No API keys needed! Use local/mock providers
+   # See example_no_api_keys.py for details
+   ```
+
+   **Option C: Local LLM with Ollama**
+   ```bash
+   # Install Ollama: https://ollama.ai/
+   ollama pull llama2
+   ollama serve
    ```
 
 3. **Start Required Services** (if using Docker):
@@ -36,14 +50,18 @@ This directory contains example applications and use cases demonstrating how to 
 ### Run Your First Example
 
 ```bash
-# Simple chatbot
+# Without API keys (recommended for first try)
+python examples/example_no_api_keys.py
+
+# Simple usage example
+python examples/example_simple.py
+
+# Multi-provider LLM demo
+python examples/example_multi_provider_llm.py
+
+# With applications (requires API keys or Ollama)
 python examples/applications/simple_chatbot.py
-
-# Document Q&A system
 python examples/applications/document_qa_system.py
-
-# Web scraper RAG
-python examples/applications/web_scraper_rag.py --mode wikipedia
 ```
 
 ## Example Applications
@@ -190,6 +208,28 @@ python examples/applications/web_scraper_rag.py --urls https://example.com/page1
      - Artificial intelligence (en.wikipedia.org)
      - Machine learning (en.wikipedia.org)
 ```
+
+## No API Keys Required
+
+Perfect for getting started, testing, and demos:
+
+| Example | Description | Requirements |
+|---------|-------------|--------------|
+| `example_no_api_keys.py` | Complete demo without any API keys | None |
+| `example_multi_provider_llm.py` | Shows mock provider usage | None |
+| `example_embedding_providers.py` | Local embeddings only | sentence-transformers |
+
+### Mock Provider Features
+- Contextual responses based on keywords
+- Structured output support
+- Perfect for CI/CD and testing
+- No external dependencies
+
+### Local LLM with Ollama
+- Real LLM inference without API keys
+- Supports llama2, mistral, codellama
+- Full RAG functionality
+- Requires Ollama installation
 
 ## Basic Examples
 

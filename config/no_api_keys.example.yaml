@@ -1,0 +1,57 @@
+# Configuration for running RAG Engine without API keys
+# Perfect for development, testing, and demos
+
+# LLM Configuration - No API keys required
+llm_provider: "mock"  # Options: "mock", "local" (if Ollama is installed)
+llm_model: "mock-llm-v1"
+temperature: 0.7
+max_tokens: 500
+
+# Alternative: Use Ollama for real local LLM inference
+# llm_provider: "local"
+# llm_model: "llama2"
+# ollama_base_url: "http://localhost:11434"
+
+# Embedding Configuration - No API keys required
+embedding_provider: "sentence_transformers"
+embedding_model: "all-MiniLM-L6-v2"  # Downloaded automatically
+embedding_dimension: 384
+
+# Vector Store Configuration - Local storage
+vector_store_provider: "chroma"
+vector_store_path: "./data/chroma_db"
+
+# Retrieval Configuration
+retrieval_strategy: "similarity"
+top_k: 5
+similarity_threshold: 0.7
+
+# Reranking Configuration (optional)
+reranker_provider: "sentence_transformers"
+reranker_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+rerank_top_k: 3
+
+# Chunking Configuration
+chunk_size: 500
+chunk_overlap: 50
+chunking_strategy: "recursive"
+
+# Query Processing
+query_expansion: false  # Keep simple for demo
+multi_query: false
+
+# Generation Configuration
+max_context_length: 2000
+include_sources: true
+response_format: "markdown"
+
+# Observability (optional)
+observability_enabled: false  # Set to true if you have Langfuse setup
+
+# Performance
+batch_size: 10
+max_concurrent_requests: 5
+
+# Logging
+log_level: "INFO"
+log_file: "./logs/rag_engine.log"

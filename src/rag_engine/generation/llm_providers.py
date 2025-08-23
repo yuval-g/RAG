@@ -422,6 +422,115 @@ class LocalLLMProvider(BaseLLMProvider):
         }
 
 
+class MockLLMProvider(BaseLLMProvider):
+    """Mock LLM provider for testing and demos without API keys"""
+    
+    def __init__(self, config: PipelineConfig):
+        """
+        Initialize Mock LLM provider.
+        
+        Args:
+            config: Pipeline configuration
+        """
+        self.config = config
+        self.model_name = getattr(config, 'llm_model', 'mock-llm-v1')
+        logger.info(f"MockLLMProvider initialized with model: {self.model_name}")
+    
+    def generate(self, prompt: str, **kwargs) -> str:
+        """
+        Generate mock text responses based on prompt keywords.
+        
+        Args:
+            prompt: Input prompt
+            **kwargs: Additional generation parameters
+            
+        Returns:
+            str: Mock generated text
+        """
+        prompt_lower = prompt.lower()
+        
+        # Provide contextual mock responses based on keywords
+        if any(word in prompt_lower for word in ["rag", "retrieval", "augmented"]):
+            return ("Retrieval-Augmented Generation (RAG) is a technique that combines "
+                   "information retrieval with text generation. It retrieves relevant "
+                   "documents from a knowledge base and uses them to generate more "
+                   "accurate and contextual responses.")
+        
+        elif any(word in prompt_lower for word in ["hello", "hi", "greet"]):
+            return "Hello! I'm a mock LLM provider designed for testing and demos without API keys."
+        
+        elif any(word in prompt_lower for word in ["python", "programming", "code"]):
+            return ("Python is a high-level programming language known for its "
+                   "simplicity and readability. It's widely used in data science, "
+                   "web development, and AI applications.")
+        
+        elif any(word in prompt_lower for word in ["explain", "what is", "define"]):
+            return f"This is a mock explanation for your query about: {prompt[:100]}..."
+        
+        elif any(word in prompt_lower for word in ["summarize", "summary"]):
+            return f"Mock summary: The key points from your request are simulated here. Original query: {prompt[:50]}..."
+        
+        else:
+            return (f"Mock LLM response to: '{prompt[:100]}...'. "
+                   f"This is a simulated response for testing purposes. "
+                   f"Temperature: {self.config.temperature}")
+    
+    def generate_with_structured_output(self, prompt: str, schema: Dict[str, Any], **kwargs) -> Dict[str, Any]:
+        """
+        Generate mock structured output.
+        
+        Args:
+            prompt: Input prompt
+            schema: Output schema
+            **kwargs: Additional generation parameters
+            
+        Returns:
+            Dict[str, Any]: Mock structured output
+        """
+        # Generate mock structured response based on schema
+        mock_response = {
+            "mock_response": True,
+            "prompt_received": prompt[:100] + "..." if len(prompt) > 100 else prompt,
+            "schema_type": schema.get("type", "unknown"),
+            "temperature": self.config.temperature,
+            "model": self.model_name
+        }
+        
+        # Add mock data based on schema properties
+        if "properties" in schema:
+            for prop_name, prop_info in schema["properties"].items():
+                prop_type = prop_info.get("type", "string")
+                
+                if prop_type == "string":
+                    mock_response[prop_name] = f"Mock {prop_name} value"
+                elif prop_type == "array":
+                    mock_response[prop_name] = [f"Mock item 1", f"Mock item 2"]
+                elif prop_type == "number":
+                    mock_response[prop_name] = 42
+                elif prop_type == "boolean":
+                    mock_response[prop_name] = True
+                else:
+                    mock_response[prop_name] = f"Mock {prop_type} value"
+        
+        return mock_response
+    
+    def get_model_info(self) -> Dict[str, Any]:
+        """
+        Get information about the mock model.
+        
+        Returns:
+            Dict[str, Any]: Model information
+        """
+        return {
+            "provider": "mock",
+            "model": self.model_name,
+            "temperature": self.config.temperature,
+            "max_tokens": getattr(self.config, 'max_tokens', None),
+            "supports_structured_output": True,
+            "note": "Mock provider for testing without API keys"
+        }
+
+
 class LLMProviderFactory:
     """Factory class for creating LLM providers"""
     
@@ -430,6 +539,7 @@ class LLMProviderFactory:
         "openai": OpenAILLMProvider,
         "local": LocalLLMProvider,
         "ollama": LocalLLMProvider,  # Alias for local
+        "mock": MockLLMProvider,  # Mock provider for testing
     }
     
     @classmethod
@@ -551,6 +661,12 @@ def get_default_provider_config() -> Dict[str, Dict[str, Any]]:
             "models": ["llama2", "mistral", "codellama", "custom"],
             "default_model": "llama2",
             "supports_structured_output": False,
+            "api_key_env": None
+        },
+        "mock": {
+            "models": ["mock-llm-v1", "mock-llm-v2", "mock-gpt", "mock-gemini"],
+            "default_model": "mock-llm-v1",
+            "supports_structured_output": True,
             "api_key_env": None
         }
     }
