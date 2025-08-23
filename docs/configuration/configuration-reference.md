@@ -58,8 +58,6 @@ CORS_ORIGINS=*                     # CORS allowed origins
 # LLM Providers
 GOOGLE_API_KEY=your_google_key     # Google AI API key
 OPENAI_API_KEY=your_openai_key     # OpenAI API key
-ANTHROPIC_API_KEY=your_anthropic_key # Anthropic API key
-COHERE_API_KEY=your_cohere_key     # Cohere API key (for reranking)
 
 # Vector Store Providers
 PINECONE_API_KEY=your_pinecone_key # Pinecone API key
@@ -177,7 +175,7 @@ retrieval:
   k: 5
   score_threshold: 0.7
   enable_reranking: true
-  reranker_model: "cohere"
+  
   max_retrieved_docs: 20
 
 # Query Processing
@@ -255,7 +253,6 @@ config = PipelineConfig(
     # Retrieval Settings
     retrieval_k=5,
     use_reranking=True,
-    reranker_model="cohere",
     
     # Query Processing
     query_strategies=["multi_query", "rag_fusion"],
@@ -295,15 +292,6 @@ llm:
   max_tokens: 1000
   frequency_penalty: 0.0
   presence_penalty: 0.0
-```
-
-#### Anthropic
-```yaml
-llm:
-  provider: "anthropic"
-  model: "claude-3-sonnet-20240229"
-  temperature: 0.1
-  max_tokens: 1000
 ```
 
 ### Vector Store Providers
@@ -401,7 +389,7 @@ retrieval:
   
   # Reranking (improves quality but adds latency)
   enable_reranking: true
-  reranker_model: "cohere"
+  
   rerank_top_k: 10
   
   # Caching
@@ -971,7 +959,7 @@ python scripts/config_manager.py schema
 ### Core Configuration
 
 - **Environment**: `development`, `testing`, `staging`, `production`
-- **LLM Provider**: `google`, `openai`, `anthropic`, `local`, `ollama`
+- **LLM Provider**: `google`, `openai`, `local`, `ollama`
 - **Embedding Provider**: `openai`, `huggingface`
 - **Vector Store**: `chroma`, `pinecone`, `weaviate`
 - **Indexing Strategy**: `basic`, `multi_representation`, `colbert`, `raptor`
@@ -1072,4 +1060,4 @@ config = config_manager.load_config()
 engine = RAGEngine(config)
 ```
 
-This configuration management system provides a robust foundation for deploying the RAG system across different environments with proper validation, security, and maintainability.
+This configuration management system provides a robust foundation for deploying the RAG system across different environments with proper validation, security, and maintainability.bility.

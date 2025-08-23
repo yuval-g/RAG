@@ -27,19 +27,21 @@ Before you begin, ensure you have the following installed on your system:
 
 1.  **Fork the Repository**: Go to the RAG System GitHub repository and click the "Fork" button.
 2.  **Clone Your Fork**: Clone your forked repository to your local machine:
-    ```bash
+```bash
 git clone https://github.com/<your-username>/rag-engine.git
 cd rag-engine
-    ```
+
+```
 
 ## 3. Environment Setup
 
 It is highly recommended to use a Python virtual environment to manage project dependencies.
 
 1.  **Create a Virtual Environment**:
-    ```bash
+```bash
 python3 -m venv .venv
-    ```
+
+```
 2.  **Activate the Virtual Environment**:
     *   **On Linux/macOS:**
         ```bash
@@ -77,23 +79,26 @@ pip install -e .
 For development, you'll typically use a `.env` file to manage API keys and other settings.
 
 1.  **Create `.env` file**: Copy the example environment file:
-    ```bash
+```bash
 cp .env.example .env
-    ```
+
+```
 2.  **Edit `.env`**: Open the `.env` file and provide your API keys (e.g., `GOOGLE_API_KEY`, `OPENAI_API_KEY`) and set `ENVIRONMENT=development`.
 
-    ```ini
+```ini
 # .env
 ENVIRONMENT=development
 LOG_LEVEL=DEBUG
 GOOGLE_API_KEY=your-google-api-key-here
 # ... other API keys and settings
-    ```
+
+```
 
 3.  **Local Services (Optional)**: If you plan to use local ChromaDB or Redis instances, ensure they are running. You can use Docker Compose for this:
-    ```bash
+```bash
 docker-compose up -d chroma redis
-    ```
+
+```
 
 ## 6. Running the Application in Development Mode
 

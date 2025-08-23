@@ -125,7 +125,6 @@ WORKERS=4                      # Number of Uvicorn worker processes for the API 
 ```bash
 GOOGLE_API_KEY=your_google_key # Your Google AI API key
 OPENAI_API_KEY=your_openai_key # Your OpenAI API key (if using OpenAI models)
-COHERE_API_KEY=your_cohere_key # Your Cohere API key (optional, for reranking)
 ```
 
 #### Service Configuration

@@ -34,12 +34,7 @@ Beyond basic indexing, the system offers advanced strategies for document repres
     *   **ColBERT (Contextualized Late Interaction over BERT)**: Enables fine-grained matching between query and document passages.
     *   **Multi-representation Indexing**: Creates multiple embeddings or representations for a single document to capture diverse semantic meanings.
 *   **Hybrid Retrieval**: Combines the strengths of vector similarity search (semantic relevance) with traditional keyword search (exact matching) for comprehensive results.
-*   **Advanced Reranking Techniques**: Utilizes sophisticated reranking models (e.g., Cohere Rerank) to re-order retrieved documents based on their relevance to the query, significantly improving the quality of context provided to the LLM.
-
-**Relevant Examples:**
-*   `examples/example_advanced_indexing.py`
-*   `examples/example_hybrid_retrieval.py`
-*   `examples/example_advanced_reranking.py`
+*   **Advanced Reranking Techniques**: Utilizes sophisticated reranking models to re-order retrieved documents based on their relevance to the query, significantly improving the quality of context provided to the LLM.
 
 ## 3. Enhanced Generation & Grounding
 
@@ -49,14 +44,13 @@ Ensuring that generated responses are factual and attributable to source materia
     *   **Context Adherence**: Strict prompt instructions to LLMs to use only provided information.
     *   **Source Attribution**: Generates responses with numbered citations linking claims directly to source documents.
     *   **Response Validation**: Automatically fact-checks generated responses against retrieved documents, providing confidence scores and identifying ungrounded statements.
-*   **Multi-Provider LLM Integration**: Seamlessly switch between and integrate with various Large Language Model providers (e.g., Google Gemini, OpenAI GPT, Anthropic Claude) based on performance, cost, or specific use case requirements.
+*   **Multi-Provider LLM Integration**: Seamlessly switch between and integrate with various Large Language Model providers (e.g., Google Gemini, OpenAI GPT) based on performance, cost, or specific use case requirements.
 *   **Self-Correction Mechanisms**: Integrates with self-correction techniques (e.g., CRAG, Self-RAG) where the system can identify and correct its own errors or refine responses based on feedback loops.
 
 **Relevant Examples:**
 *   `examples/example_grounded_generation.py`
 *   `examples/example_multi_provider_llm.py`
 *   `examples/example_self_correction.py`
-*   See also: [Grounded Generation Features Summary](GROUNDING_FEATURES_SUMMARY.md)
 
 ## 4. Comprehensive Evaluation & Testing
 
@@ -96,7 +90,7 @@ The RAG System incorporates robust error handling and resilience patterns to ens
 *   **Timeout Handling**: Prevents operations from hanging indefinitely.
 
 **Relevant Documentation:**
-*   [Error Handling and Resilience](../../error_handling_and_resilience.md)
+*   [Error Handling and Resilience](../development/error_handling_and_resilience.md)
 *   `examples/example_error_handling_resilience.py`
 
 ## 7. Monitoring & Observability

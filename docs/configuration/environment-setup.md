@@ -24,13 +24,14 @@ Environment variables can be set directly in your shell, in a `.env` file, or th
 For local development, create a `.env` file in the root directory of your project. This file is automatically loaded by the application (if configured to do so) and allows you to manage your environment variables easily without setting them globally.
 
 1.  **Create `.env` from example:**
-    ```bash
+```bash
 cp .env.example .env
-    ```
+
+```
 
 2.  **Edit `.env`:** Open the `.env` file and fill in your actual values.
 
-    ```ini
+```ini
 # Example environment variables for the RAG Engine
 
 # LangChain API Key (if using LangChain services)
@@ -43,11 +44,7 @@ GOOGLE_API_KEY=your-google-api-key-here
 # Optional: OpenAI API Key (if using OpenAI LLM/Embedding providers)
 OPENAI_API_KEY=your-openai-api-key-here
 
-# Optional: Anthropic API Key (if using Anthropic LLM providers)
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
 
-# Optional: Cohere API Key (if using Cohere reranking)
-COHERE_API_KEY=your-cohere-api-key-here
 
 # Optional: Pinecone API Key and Environment (if using Pinecone vector store)
 PINECONE_API_KEY=your-pinecone-api-key-here
@@ -103,7 +100,8 @@ USER_AGENT=rag-engine/1.0
 # Optional: Default LLM model and temperature
 DEFAULT_LLM_MODEL=gemini-2.0-flash-lite
 DEFAULT_TEMPERATURE=0.1
-    ```
+
+```
 
 ### Setting in Shell (Temporary)
 
@@ -139,8 +137,6 @@ Here's a breakdown of important environment variables and their purpose:
 
 *   `GOOGLE_API_KEY`: Your API key for Google AI services (Gemini models, Google Embeddings).
 *   `OPENAI_API_KEY`: Your API key for OpenAI services (GPT models, OpenAI Embeddings).
-*   `ANTHROPIC_API_KEY`: Your API key for Anthropic models.
-*   `COHERE_API_KEY`: Your API key for Cohere services (e.g., reranking).
 *   `PINECONE_API_KEY`, `PINECONE_ENVIRONMENT`: Credentials for Pinecone vector database.
 *   `WEAVIATE_URL`, `WEAVIATE_API_KEY`: Connection details for Weaviate vector database.
 *   `API_KEY`: A general API key for authenticating requests to your RAG Engine API.
@@ -172,3 +168,4 @@ Here's a breakdown of important environment variables and their purpose:
 *   **Prioritize secrets**: Always use environment variables or dedicated secret management solutions for API keys and sensitive data, as they override values in configuration files.
 
 For more detailed configuration options, refer to the [Configuration Reference](../configuration-reference.md).
+-reference.md).

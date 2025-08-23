@@ -14,7 +14,7 @@ Before deploying on bare metal, ensure your server meets the following requireme
 *   **Python**: Python 3.13 or higher must be installed.
 *   **Package Manager**: `pip` or `uv` for Python package management.
 *   **Git**: For cloning the RAG System repository.
-*   **System Resources**: Refer to the [System Requirements](../../deployment_guide.md#system-requirements) in the main deployment guide for CPU, memory, and storage recommendations.
+*   **System Resources**: Refer to the [Prerequisites](./docker.md#prerequisites) in the Docker deployment guide for system requirements and recommendations.
 *   **External Dependencies**: Depending on your chosen configuration, you might need to install and run external services like:
     *   **ChromaDB**: If using a local persistent Chroma instance, ensure it's running and accessible.
     *   **Redis**: If enabling caching, a Redis server should be installed and configured.

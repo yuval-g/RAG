@@ -12,7 +12,7 @@ When deploying on a cloud provider, you will typically leverage their managed se
 
 ### 1. Compute Resources
 
-*   **Virtual Machines (VMs)**: For Docker-based deployments, provision VMs (e.g., AWS EC2, GCP Compute Engine, Azure Virtual Machines) with sufficient CPU and memory as per the [Prerequisites](../../deployment_guide.md#prerequisites).
+*   **Virtual Machines (VMs)**: For Docker-based deployments, provision VMs (e.g., AWS EC2, GCP Compute Engine, Azure Virtual Machines) with sufficient CPU and memory as per the [Prerequisites](./docker.md#prerequisites).
 *   **Container Orchestration Services**: For Kubernetes deployments, utilize managed Kubernetes services (e.g., AWS EKS, GCP GKE, Azure AKS) to handle cluster management.
 
 ### 2. Networking

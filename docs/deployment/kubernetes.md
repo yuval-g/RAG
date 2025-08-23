@@ -21,17 +21,19 @@ The RAG System is designed for deployment on Kubernetes, leveraging its capabili
 Ensure you have the following command-line tools installed and configured to interact with your Kubernetes cluster:
 
 *   **`kubectl`**: The Kubernetes command-line tool.
-    ```bash
-    # Example installation for Linux (refer to Kubernetes docs for other OS)
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    chmod +x kubectl
-    sudo mv kubectl /usr/local/bin/
-    ```
+```bash
+# Example installation for Linux (refer to Kubernetes docs for other OS)
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+```
 *   **`helm` (optional)**: The Kubernetes package manager, useful for managing complex applications.
-    ```bash
-    # Example Helm installation
-    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-    ```
+```bash
+# Example Helm installation
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+```
 
 **Verify Cluster Access:**
 ```bash
@@ -62,34 +64,38 @@ kubectl get all -n rag-engine
 If you prefer to deploy components manually, follow these steps:
 
 1.  **Create Namespace**:
-    ```bash
+```bash
 kubectl apply -f deployment/k8s/namespace.yaml
-    ```
+
+```
 
 2.  **Create Secrets**:
     Update the secret values with your actual API keys and passwords, then apply.
-    ```bash
+```bash
 kubectl create secret generic rag-engine-secrets \
   --from-literal=GOOGLE_API_KEY=your_google_api_key \
   --from-literal=GRAFANA_PASSWORD=your_grafana_password \
   -n rag-engine
-    ```
+
+```
 
 3.  **Deploy Services**:
     Apply the Kubernetes manifests for each component:
-    ```bash
+```bash
 kubectl apply -f deployment/k8s/configmap.yaml
 kubectl apply -f deployment/k8s/redis-deployment.yaml
 kubectl apply -f deployment/k8s/chroma-deployment.yaml
 kubectl apply -f deployment/k8s/rag-engine-deployment.yaml
 kubectl apply -f deployment/k8s/nginx-deployment.yaml
 kubectl apply -f deployment/k8s/monitoring.yaml
-    ```
+
+```
 
 4.  **Wait for Deployments**:
-    ```bash
+```bash
 kubectl wait --for=condition=available --timeout=300s deployment --all -n rag-engine
-    ```
+
+```
 
 ## Architecture Overview
 
@@ -135,7 +141,6 @@ Sensitive information like API keys and passwords should be managed securely usi
 # API Keys (replace with your actual values)
 kubectl create secret generic rag-engine-secrets \
   --from-literal=GOOGLE_API_KEY="your_google_api_key" \
-  --from-literal=COHERE_API_KEY="your_cohere_api_key" \
   --from-literal=GRAFANA_PASSWORD="secure_password" \
   -n rag-engine
 
@@ -987,25 +992,27 @@ spec:
 ### Disaster Recovery Plan
 
 1.  **Automated Backups**: Schedule regular backups using Kubernetes CronJobs or Velero schedules.
-    ```bash
-    # Example CronJob for daily Velero backup
-    kubectl create cronjob rag-engine-backup \
-      --image=velero/velero:latest \
-      --schedule="0 2 * * *" \
-      --restart=OnFailure \
-      -- velero backup create rag-engine-$(date +%Y%m%d)
-    ```
+```bash
+# Example CronJob for daily Velero backup
+kubectl create cronjob rag-engine-backup \
+  --image=velero/velero:latest \
+  --schedule="0 2 * * *" \
+  --restart=OnFailure \
+  -- velero backup create rag-engine-$(date +%Y%m%d)
+
+```
 
 2.  **Cross-Region Replication**: Configure your storage solution for cross-region replication of persistent volumes.
 
 3.  **Recovery Procedures**: Document and regularly test your recovery procedures.
-    ```bash
-    # Example restore from backup
-    velero restore create --from-backup rag-engine-20240101
-    
-    # Verify restoration
-    kubectl get all -n rag-engine
-    ```
+```bash
+# Example restore from backup
+velero restore create --from-backup rag-engine-20240101
+
+# Verify restoration
+kubectl get all -n rag-engine
+
+```
 
 ## Troubleshooting
 
@@ -1056,14 +1063,16 @@ kubectl rollout undo deployment/rag-engine -n rag-engine
 ### Cluster Maintenance
 
 *   **Drain Node**: Safely evict all pods from a node for maintenance.
-    ```bash
+```bash
 kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data
-    ```
+
+```
 *   **Cordon/Uncordon Node**: Mark a node as unschedulable/schedulable.
-    ```bash
+```bash
 kubectl cordon <node-name>
 kubectl uncordon <node-name>
-    ```
+
+```
 
 ### Automated Maintenance
 
