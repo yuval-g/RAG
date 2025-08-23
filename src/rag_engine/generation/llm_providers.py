@@ -9,6 +9,11 @@ import logging
 import os
 from abc import ABC, abstractmethod
 
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+except ImportError:
+    ChatGoogleGenerativeAI = None
+
 from ..core.interfaces import BaseLLMProvider
 from ..core.config import PipelineConfig
 from ..core.exceptions import ConfigurationError, GenerationError, ExternalServiceError
@@ -300,133 +305,7 @@ class OpenAILLMProvider(BaseLLMProvider):
         }
 
 
-class AnthropicLLMProvider(BaseLLMProvider):
-    """Anthropic Claude LLM provider implementation"""
-    
-    def __init__(self, config: PipelineConfig):
-        """
-        Initialize Anthropic LLM provider.
-        
-        Args:
-            config: Pipeline configuration
-        """
-        self.config = config
-        
-        try:
-            from langchain_anthropic import ChatAnthropic
-            
-            # Map common model names to Anthropic equivalents
-            model_mapping = {
-                "gpt-3.5-turbo": "claude-3-haiku-20240307",
-                "gpt-4": "claude-3-sonnet-20240229",
-                "gpt-4-turbo": "claude-3-opus-20240229",
-                "claude-3-haiku": "claude-3-haiku-20240307",
-                "claude-3-sonnet": "claude-3-sonnet-20240229",
-                "claude-3-opus": "claude-3-opus-20240229"
-            }
-            
-            model_name = model_mapping.get(config.llm_model, "claude-3-sonnet-20240229")
-            
-            # Initialize with configuration
-            init_params = {
-                "model": model_name,
-                "temperature": config.temperature,
-            }
-            
-            # Add max_tokens if specified
-            if hasattr(config, 'max_tokens') and config.max_tokens:
-                init_params["max_tokens"] = config.max_tokens
-            
-            # Add API key if available
-            if hasattr(config, 'anthropic_api_key') and config.anthropic_api_key:
-                init_params["anthropic_api_key"] = config.anthropic_api_key
-            elif os.getenv("ANTHROPIC_API_KEY"):
-                init_params["anthropic_api_key"] = os.getenv("ANTHROPIC_API_KEY")
-            
-            self.llm = ChatAnthropic(**init_params)
-            self.model_name = model_name
-            
-            logger.info(f"AnthropicLLMProvider initialized with model: {model_name}")
-            
-        except ImportError as e:
-            raise ConfigurationError(f"Anthropic not available. Install with: pip install langchain-anthropic. Error: {str(e)}")
-        except Exception as e:
-            raise ConfigurationError(f"Failed to initialize Anthropic LLM provider: {str(e)}")
-    
-    def generate(self, prompt: str, **kwargs) -> str:
-        """
-        Generate text using Anthropic Claude with resilience patterns.
-        
-        Args:
-            prompt: Input prompt
-            **kwargs: Additional generation parameters
-            
-        Returns:
-            str: Generated text
-        """
-        def _generate_internal():
-            try:
-                response = self.llm.invoke(prompt, **kwargs)
-                return response.content if hasattr(response, 'content') else str(response)
-            except Exception as e:
-                logger.error(f"Error generating text with Anthropic provider: {str(e)}")
-                raise ExternalServiceError(f"Anthropic LLM generation failed: {str(e)}")
-        
-        def _fallback_generate():
-            logger.warning("Using fallback generation for Anthropic provider")
-            return f"[Generation temporarily unavailable. Original prompt: {prompt[:100]}...]"
-        
-        try:
-            return resilient_call(
-                _generate_internal,
-                circuit_breaker_name="anthropic_llm",
-                retry_name="anthropic_llm_retry",
-                fallback_operation="anthropic_generate",
-                fallback_func=_fallback_generate
-            )
-        except Exception as e:
-            raise GenerationError(f"Anthropic LLM generation failed after all resilience attempts: {str(e)}")
-    
-    def generate_with_structured_output(self, prompt: str, schema: Dict[str, Any], **kwargs) -> Dict[str, Any]:
-        """
-        Generate structured output using Anthropic Claude.
-        
-        Args:
-            prompt: Input prompt
-            schema: Output schema
-            **kwargs: Additional generation parameters
-            
-        Returns:
-            Dict[str, Any]: Structured output
-        """
-        try:
-            # Use structured output if available
-            if hasattr(self.llm, 'with_structured_output'):
-                structured_llm = self.llm.with_structured_output(schema)
-                response = structured_llm.invoke(prompt, **kwargs)
-                return response if isinstance(response, dict) else {"response": str(response)}
-            else:
-                # Fallback to regular generation
-                response = self.generate(prompt, **kwargs)
-                return {"response": response}
-        except Exception as e:
-            logger.error(f"Error generating structured output with Anthropic provider: {str(e)}")
-            return {"error": str(e)}
-    
-    def get_model_info(self) -> Dict[str, Any]:
-        """
-        Get information about the model.
-        
-        Returns:
-            Dict[str, Any]: Model information
-        """
-        return {
-            "provider": "anthropic",
-            "model": self.model_name,
-            "temperature": self.config.temperature,
-            "max_tokens": getattr(self.config, 'max_tokens', None),
-            "supports_structured_output": hasattr(self.llm, 'with_structured_output')
-        }
+
 
 
 class LocalLLMProvider(BaseLLMProvider):
@@ -549,7 +428,6 @@ class LLMProviderFactory:
     _providers = {
         "google": GoogleLLMProvider,
         "openai": OpenAILLMProvider,
-        "anthropic": AnthropicLLMProvider,
         "local": LocalLLMProvider,
         "ollama": LocalLLMProvider,  # Alias for local
     }
@@ -668,12 +546,6 @@ def get_default_provider_config() -> Dict[str, Dict[str, Any]]:
             "default_model": "gpt-3.5-turbo",
             "supports_structured_output": True,
             "api_key_env": "OPENAI_API_KEY"
-        },
-        "anthropic": {
-            "models": ["claude-3-haiku-20240307", "claude-3-sonnet-20240229", "claude-3-opus-20240229"],
-            "default_model": "claude-3-sonnet-20240229",
-            "supports_structured_output": True,
-            "api_key_env": "ANTHROPIC_API_KEY"
         },
         "local": {
             "models": ["llama2", "mistral", "codellama", "custom"],

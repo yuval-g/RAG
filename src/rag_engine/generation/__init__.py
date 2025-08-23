@@ -6,7 +6,6 @@ from .generation_engine import GenerationEngine
 from .llm_providers import (
     GoogleLLMProvider,
     OpenAILLMProvider,
-    AnthropicLLMProvider,
     LocalLLMProvider,
     LLMProviderFactory
 )
@@ -14,8 +13,7 @@ from .llm_providers import (
 __all__ = [
     "GenerationEngine",
     "GoogleLLMProvider",
-    "OpenAILLMProvider", 
-    "AnthropicLLMProvider",
+    "OpenAILLMProvider",
     "LocalLLMProvider",
     "LLMProviderFactory"
 ]
