@@ -22,4 +22,7 @@ workplan/
 REPORTS/
 .kiro/
 .benchmarks/
+logs/
 *.log
+
+pytest.ini

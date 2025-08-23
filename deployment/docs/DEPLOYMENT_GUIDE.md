@@ -31,7 +31,7 @@ This guide covers deploying the RAG Engine in various environments using Docker 
 ### API Keys and Credentials
 
 - Google AI API Key (for Gemini models)
-- Optional: Cohere API Key (for reranking)
+
 - SSL certificates (for production HTTPS)
 
 ## Environment Configuration
@@ -48,7 +48,6 @@ WORKERS=4
 
 # API Keys
 GOOGLE_API_KEY=your_google_api_key_here
-COHERE_API_KEY=your_cohere_api_key_here  # Optional
 
 # Database Configuration
 CHROMA_HOST=chroma
@@ -524,4 +523,4 @@ Monitor key metrics:
    - Switch traffic gradually
    - Rollback if issues occur
 
-For more detailed information, see the individual component documentation in this directory.
+For more detailed information, see the individual component documentation in this directory.irectory.

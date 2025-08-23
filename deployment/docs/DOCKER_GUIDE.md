@@ -103,7 +103,6 @@ WORKERS=4                      # Number of worker processes
 #### API Keys
 ```bash
 GOOGLE_API_KEY=your_key        # Google AI API key
-COHERE_API_KEY=your_key        # Cohere API key (optional)
 ```
 
 #### Service Configuration

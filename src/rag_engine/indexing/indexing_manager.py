@@ -255,7 +255,10 @@ class IndexingManager:
         strategy = strategy or self._active_strategy
         
         indexer_class = self._indexer_registry.get(strategy)
-        class_name = indexer_class.__name__ if indexer_class else "Unknown"
+        try:
+            class_name = indexer_class.__name__ if indexer_class else "Unknown"
+        except AttributeError:
+            class_name = str(indexer_class) if indexer_class else "Unknown"
         
         info = {
             "strategy": strategy,

@@ -42,7 +42,7 @@ class LLMReRanker(BaseReRankerImpl):
     """
     LLM-based re-ranker using Google Gemini for document relevance scoring.
     Adapts the re-ranking concept from workplan/04AdvancedRetrieval-Generation.md
-    but uses Google's LLM instead of Cohere.
+    
     """
 
     def __init__(self, config: Optional[PipelineConfig] = None):
@@ -209,7 +209,7 @@ class ReRanker:
         Initialize the re-ranker with specified strategy.
 
         Args:
-            strategy: Re-ranking strategy ("llm", "contextual", or "cohere")
+            strategy: Re-ranking strategy ("llm" or "contextual")
             base_retriever: Base retriever for contextual compression (required for contextual strategy)
             config: Pipeline configuration
         """

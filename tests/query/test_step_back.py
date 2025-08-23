@@ -38,7 +38,9 @@ class TestStepBackProcessor:
     
     def test_init(self):
         """Test StepBackProcessor initialization"""
-        with patch('src.rag_engine.query.step_back.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.step_back.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             processor = StepBackProcessor(
                 llm_model="gemini-2.0-flash-lite",
                 temperature=0.2
@@ -46,7 +48,7 @@ class TestStepBackProcessor:
             
             assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.2
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_create_fallback_step_back(self, processor):
         """Test fallback step-back question creation"""

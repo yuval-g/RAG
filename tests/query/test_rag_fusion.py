@@ -41,7 +41,9 @@ class TestRAGFusionProcessor:
     
     def test_init(self):
         """Test RAGFusionProcessor initialization"""
-        with patch('src.rag_engine.query.rag_fusion.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.rag_fusion.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             processor = RAGFusionProcessor(
                 llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
@@ -53,7 +55,7 @@ class TestRAGFusionProcessor:
             assert processor.temperature == 0.2
             assert processor.num_queries == 3
             assert processor.rrf_k == 50
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_parse_queries(self, processor):
         """Test query parsing from LLM output"""

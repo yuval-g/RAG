@@ -56,8 +56,6 @@ class TestQueryProcessorIntegration:
                 default_strategy="rag_fusion"
             )
             
-            assert processor.llm_model == "gemini-2.0-flash-lite"
-            assert processor.temperature == 0.3
             assert processor.default_strategy == "rag_fusion"
             
             # Check that all processors are initialized

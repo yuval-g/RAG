@@ -25,7 +25,7 @@ This directory contains example applications and use cases demonstrating how to 
 2. **Set Environment Variables**:
    ```bash
    export GOOGLE_API_KEY="your_google_api_key"
-   # Optional: export COHERE_API_KEY="your_cohere_key"
+   
    ```
 
 3. **Start Required Services** (if using Docker):
@@ -402,7 +402,6 @@ except RAGEngineError as e:
    export GOOGLE_API_KEY="your_google_api_key"
    
    # Optional
-   export COHERE_API_KEY="your_cohere_key"
    export OPENAI_API_KEY="your_openai_key"
    ```
 

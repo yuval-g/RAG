@@ -13,12 +13,6 @@ load_dotenv()
 
 # Check if optional dependencies are available
 try:
-    import langchain_anthropic
-    HAS_ANTHROPIC = True
-except ImportError:
-    HAS_ANTHROPIC = False
-
-try:
     import langchain_openai
     HAS_OPENAI = True
 except ImportError:
@@ -33,7 +27,6 @@ except ImportError:
 from src.rag_engine.generation.llm_providers import (
     GoogleLLMProvider,
     OpenAILLMProvider,
-    AnthropicLLMProvider,
     LocalLLMProvider,
     LLMProviderFactory,
     get_default_provider_config,
@@ -50,7 +43,7 @@ class TestGoogleLLMProvider:
         """Test Google provider initialization"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.5,
             max_tokens=1000
         )
@@ -134,7 +127,7 @@ class TestGoogleLLMProvider:
         """Test Google provider model info"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.7,
             max_tokens=500
         )
@@ -194,56 +187,7 @@ class TestOpenAILLMProvider:
             assert result == "OpenAI response"
 
 
-class TestAnthropicLLMProvider:
-    """Test Anthropic LLM provider"""
-    
-    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
-    def test_anthropic_provider_initialization(self):
-        """Test Anthropic provider initialization"""
-        config = PipelineConfig(
-            llm_provider="anthropic",
-            llm_model="claude-3-sonnet",
-            temperature=0.3
-        )
-        
-        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
-            provider = AnthropicLLMProvider(config)
-            
-            assert provider.config == config
-            mock_chat.assert_called_once()
-    
-    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
-    def test_anthropic_provider_model_mapping(self):
-        """Test Anthropic provider model name mapping"""
-        config = PipelineConfig(
-            llm_provider="anthropic",
-            llm_model="gpt-4",  # Should be mapped to claude-3-opus
-            temperature=0.0
-        )
-        
-        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
-            provider = AnthropicLLMProvider(config)
-            
-            # Check that gpt-4 was mapped to claude-3-opus
-            call_args = mock_chat.call_args[1]
-            assert call_args["model"] == "claude-3-opus-20240229"
-    
-    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
-    def test_anthropic_provider_generate(self):
-        """Test Anthropic provider text generation"""
-        config = PipelineConfig(llm_provider="anthropic")
-        
-        with patch('langchain_anthropic.ChatAnthropic') as mock_chat:
-            mock_llm = Mock()
-            mock_response = Mock()
-            mock_response.content = "Claude response"
-            mock_llm.invoke.return_value = mock_response
-            mock_chat.return_value = mock_llm
-            
-            provider = AnthropicLLMProvider(config)
-            result = provider.generate("Test prompt")
-            
-            assert result == "Claude response"
+
 
 
 class TestLocalLLMProvider:
@@ -332,14 +276,7 @@ class TestLLMProviderFactory:
             provider = LLMProviderFactory.create_provider("openai", config)
             assert isinstance(provider, OpenAILLMProvider)
     
-    @ pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
-    def test_create_anthropic_provider(self):
-        """Test creating Anthropic provider"""
-        config = PipelineConfig(llm_provider="anthropic")
-        
-        with patch('langchain_anthropic.ChatAnthropic'):
-            provider = LLMProviderFactory.create_provider("anthropic", config)
-            assert isinstance(provider, AnthropicLLMProvider)
+    
     
     @ pytest.mark.skipif(not HAS_COMMUNITY, reason="langchain-community not installed")
     def test_create_local_provider(self):
@@ -370,7 +307,7 @@ class TestLLMProviderFactory:
         """Test getting available providers"""
         providers = LLMProviderFactory.get_available_providers()
         
-        expected_providers = ["google", "openai", "anthropic", "local", "ollama"]
+        expected_providers = ["google", "openai", "local", "ollama"]
         assert all(provider in providers for provider in expected_providers)
     
     def test_register_custom_provider(self):
@@ -416,7 +353,6 @@ class TestProviderConfiguration:
         
         assert "google" in configs
         assert "openai" in configs
-        assert "anthropic" in configs
         assert "local" in configs
         
         # Check Google config
@@ -430,7 +366,7 @@ class TestProviderConfiguration:
         """Test validating valid provider configuration"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             google_api_key="test-key"
         )
         

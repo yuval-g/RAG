@@ -13,12 +13,6 @@ load_dotenv()
 
 # Check if optional dependencies are available
 try:
-    import langchain_anthropic
-    HAS_ANTHROPIC = True
-except ImportError:
-    HAS_ANTHROPIC = False
-
-try:
     import langchain_openai
     HAS_OPENAI = True
 except ImportError:
@@ -46,7 +40,7 @@ class TestLLMProviderFactory:
         """Test getting available providers"""
         providers = LLMProviderFactory.get_available_providers()
         
-        expected_providers = ["google", "openai", "anthropic", "local", "ollama"]
+        expected_providers = ["google", "openai", "local", "ollama"]
         assert all(provider in providers for provider in expected_providers)
     
     def test_create_unsupported_provider(self):
@@ -99,7 +93,6 @@ class TestProviderConfiguration:
         
         assert "google" in configs
         assert "openai" in configs
-        assert "anthropic" in configs
         assert "local" in configs
         
         # Check Google config
@@ -113,7 +106,7 @@ class TestProviderConfiguration:
         """Test validating valid provider configuration"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             google_api_key="test-key"
         )
         
@@ -124,7 +117,7 @@ class TestProviderConfiguration:
         """Test validating configuration with missing API key"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro"
+            llm_model="gemini-2.0-flash-lite"
         )
         
         with patch.dict(os.environ, {}, clear=True):
@@ -136,7 +129,7 @@ class TestProviderConfiguration:
         """Test validating configuration with API key from environment"""
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro"
+            llm_model="gemini-2.0-flash-lite"
         )
         
         with patch.dict(os.environ, {"GOOGLE_API_KEY": "env-key"}):
@@ -211,13 +204,12 @@ class TestConfigurationManager:
         
         with patch.dict(os.environ, {
             "GOOGLE_API_KEY": "test-google-key",
-            "ANTHROPIC_API_KEY": "test-anthropic-key",
             "OLLAMA_BASE_URL": "http://localhost:11434"
         }):
             env_config = config_manager._load_from_environment()
             
             assert env_config.get("google_api_key") == "test-google-key"
-            assert env_config.get("anthropic_api_key") == "test-anthropic-key"
+            
             assert env_config.get("ollama_base_url") == "http://localhost:11434"
 
 
@@ -250,21 +242,6 @@ class TestProviderIntegrationMocked:
         from src.rag_engine.generation.llm_providers import OpenAILLMProvider
         
         provider = OpenAILLMProvider(config)
-        assert provider.config == config
-        mock_chat.assert_called_once()
-    
-    @pytest.mark.skipif(not HAS_ANTHROPIC, reason="langchain-anthropic not installed")
-    @patch('langchain_anthropic.ChatAnthropic')
-    def test_anthropic_provider_creation(self, mock_chat):
-        """Test Anthropic provider creation with mocked dependency"""
-        config = PipelineConfig(
-            llm_provider="anthropic",
-            llm_model="claude-3-sonnet"
-        )
-        
-        from src.rag_engine.generation.llm_providers import AnthropicLLMProvider
-        
-        provider = AnthropicLLMProvider(config)
         assert provider.config == config
         mock_chat.assert_called_once()
     

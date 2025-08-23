@@ -53,22 +53,8 @@ class QueryProcessor(BaseQueryProcessor):
             **llm_kwargs: Additional arguments for the LLM
         """
         # Handle case where llm_model is actually a PipelineConfig object
-        if hasattr(llm_model, 'llm_model'):
-            # Extract parameters from PipelineConfig
-            config = llm_model
-            self._llm_model_str = config.llm_model
-            self.temperature = config.temperature
-            # Extract API keys and other LLM parameters
-            if hasattr(config, 'google_api_key') and config.google_api_key:
-                llm_kwargs['google_api_key'] = config.google_api_key
-            if hasattr(config, 'openai_api_key') and config.openai_api_key:
-                llm_kwargs['openai_api_key'] = config.openai_api_key
-            if hasattr(config, 'anthropic_api_key') and config.anthropic_api_key:
-                llm_kwargs['anthropic_api_key'] = config.anthropic_api_key
-        else:
-            # Use parameters directly
-            self._llm_model_str = llm_model
-            self.temperature = temperature
+        self.llm_model = llm_model
+        self.temperature = temperature
         
         self.default_strategy = default_strategy
         self.llm_kwargs = llm_kwargs
@@ -84,35 +70,35 @@ class QueryProcessor(BaseQueryProcessor):
         try:
             # Multi-Query Generator
             self.multi_query_generator = MultiQueryGenerator(
-                llm_model=self._llm_model_str,
+                llm_model=self.llm_model,
                 temperature=self.temperature,
                 **self.llm_kwargs
             )
             
             # RAG-Fusion Processor
             self.rag_fusion_processor = RAGFusionProcessor(
-                llm_model=self._llm_model_str,
+                llm_model=self.llm_model,
                 temperature=self.temperature,
                 **self.llm_kwargs
             )
             
             # Query Decomposer
             self.query_decomposer = QueryDecomposer(
-                llm_model=self._llm_model_str,
+                llm_model=self.llm_model,
                 temperature=self.temperature,
                 **self.llm_kwargs
             )
             
             # Step-Back Processor
             self.step_back_processor = StepBackProcessor(
-                llm_model=self._llm_model_str,
+                llm_model=self.llm_model,
                 temperature=self.temperature,
                 **self.llm_kwargs
             )
             
             # HyDE Processor
             self.hyde_processor = HyDEProcessor(
-                llm_model=self._llm_model_str,
+                llm_model=self.llm_model,
                 temperature=self.temperature,
                 **self.llm_kwargs
             )

@@ -18,7 +18,7 @@ from src.rag_engine.core.config import PipelineConfig
 def config():
     """Create a test configuration"""
     return PipelineConfig(
-        llm_model="gemini-pro",
+        llm_model="gemini-2.0-flash-lite",
         embedding_model="models/embedding-001",
         temperature=0.0,
         chunk_size=1000,

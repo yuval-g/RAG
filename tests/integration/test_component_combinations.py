@@ -198,8 +198,7 @@ class TestComponentCombinations:
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
     @patch('src.rag_engine.indexing.basic_indexer.Chroma')
-    @patch('src.rag_engine.retrieval.reranker.CohereRerank')
-    def test_advanced_indexing_with_reranking_combination(self, mock_reranker, mock_chroma, 
+    def test_advanced_indexing_with_reranking_combination(self, mock_chroma, 
                                                         mock_embeddings, mock_llm,
                                                         multi_domain_documents):
         """Test advanced indexing strategies combined with reranking"""
@@ -209,10 +208,6 @@ class TestComponentCombinations:
         mock_vectorstore = Mock()
         mock_chroma.from_documents.return_value = mock_vectorstore
         
-        # Mock reranker
-        mock_reranker_instance = Mock()
-        mock_reranker.return_value = mock_reranker_instance
-        
         # Test different indexing + reranking combinations
         indexing_strategies = [IndexingStrategy.BASIC, IndexingStrategy.MULTI_REPRESENTATION]
         
@@ -220,7 +215,6 @@ class TestComponentCombinations:
             config = PipelineConfig(
                 indexing_strategy=strategy,
                 use_reranking=True,
-                reranker_model="cohere",
                 retrieval_k=10,  # Retrieve more for reranking
                 chunk_size=800,
                 chunk_overlap=100

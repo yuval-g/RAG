@@ -105,9 +105,9 @@ Internet
 # API Keys
 kubectl create secret generic rag-engine-secrets \
   --from-literal=GOOGLE_API_KEY="your_google_api_key" \
-  --from-literal=COHERE_API_KEY="your_cohere_api_key" \
   --from-literal=GRAFANA_PASSWORD="secure_password" \
   -n rag-engine
+```
 
 # SSL Certificates
 kubectl create secret tls ssl-certs \

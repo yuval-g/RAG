@@ -5,7 +5,7 @@
 environment: "development"
 
 # LLM Configuration
-llm_provider: "google"  # google, openai, anthropic, local, ollama
+llm_provider: "google"  # google, openai, local, ollama
 llm_model: "gemini-2.0-flash-lite"
 temperature: 0.0
 max_tokens: null
@@ -43,7 +43,6 @@ routing_strategy: "logical"  # logical, semantic, hybrid
 # Retrieval Configuration
 retrieval_k: 5
 use_reranking: false
-reranker_model: "cohere"
 reranker_top_k: 10
 
 # Hybrid Retrieval Configuration
@@ -76,6 +75,3 @@ enable_caching: false
 # API Keys (can also be set via environment variables)
 google_api_key: null
 openai_api_key: null
-anthropic_api_key: null
-ollama_base_url: null
-api_key_cohere: null

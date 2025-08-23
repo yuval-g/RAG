@@ -25,7 +25,6 @@ class LLMProvider(str, Enum):
     """Supported LLM providers"""
     GOOGLE = "google"
     OPENAI = "openai"
-    ANTHROPIC = "anthropic"
     LOCAL = "local"
     OLLAMA = "ollama"
 
@@ -65,6 +64,13 @@ class LogLevel(str, Enum):
     WARNING = "WARNING"
     ERROR = "ERROR"
     CRITICAL = "CRITICAL"
+
+
+class ObservabilityProvider(str, Enum):
+    """Supported observability providers"""
+    LANGFUSE = "langfuse"
+    PHOENIX = "phoenix"
+    DISABLED = "disabled"
 
 
 class PipelineConfigSchema(BaseModel):
@@ -116,7 +122,7 @@ class PipelineConfigSchema(BaseModel):
     # Retrieval Configuration
     retrieval_k: int = Field(default=5, gt=0, le=100)
     use_reranking: bool = False
-    reranker_model: str = "cohere"
+    
     reranker_top_k: int = Field(default=10, gt=0, le=100)
     
     # Hybrid Retrieval Configuration
@@ -146,6 +152,22 @@ class PipelineConfigSchema(BaseModel):
     enable_metrics: bool = False
     enable_caching: bool = False
     
+    # Observability Configuration
+    observability_provider: ObservabilityProvider = ObservabilityProvider.DISABLED
+    observability_enabled: bool = False
+    langfuse_secret_key: Optional[str] = None
+    langfuse_public_key: Optional[str] = None
+    langfuse_host: Optional[str] = None
+    phoenix_endpoint: Optional[str] = None
+    phoenix_api_key: Optional[str] = None
+    observability_sample_rate: float = Field(default=1.0, ge=0.0, le=1.0)
+    trace_llm_calls: bool = True
+    trace_retrieval: bool = True
+    trace_embeddings: bool = True
+    trace_evaluation: bool = True
+    capture_inputs: bool = True
+    capture_outputs: bool = True
+    
     # Performance Configuration
     connection_pool_size: int = Field(default=10, gt=0, le=100)
     connection_timeout: float = Field(default=30.0, gt=0.0)
@@ -158,8 +180,6 @@ class PipelineConfigSchema(BaseModel):
     
     # API Configuration
     api_key_openai: Optional[str] = None
-    api_key_anthropic: Optional[str] = None
-    api_key_cohere: Optional[str] = None
     
     @field_validator('chunk_overlap')
     @classmethod
@@ -234,7 +254,7 @@ class PipelineConfig:
     # Retrieval Configuration
     retrieval_k: int = 5
     use_reranking: bool = False
-    reranker_model: str = "cohere"
+    
     reranker_top_k: int = 10
     
     # Hybrid Retrieval Configuration
@@ -264,6 +284,22 @@ class PipelineConfig:
     enable_metrics: bool = False
     enable_caching: bool = False
     
+    # Observability Configuration
+    observability_provider: str = "disabled"
+    observability_enabled: bool = False
+    langfuse_secret_key: Optional[str] = None
+    langfuse_public_key: Optional[str] = None
+    langfuse_host: Optional[str] = None
+    phoenix_endpoint: Optional[str] = None
+    phoenix_api_key: Optional[str] = None
+    observability_sample_rate: float = 1.0
+    trace_llm_calls: bool = True
+    trace_retrieval: bool = True
+    trace_embeddings: bool = True
+    trace_evaluation: bool = True
+    capture_inputs: bool = True
+    capture_outputs: bool = True
+    
     # Performance Configuration
     connection_pool_size: int = 10
     connection_timeout: float = 30.0
@@ -276,8 +312,6 @@ class PipelineConfig:
     
     # API Configuration
     api_key_openai: Optional[str] = None
-    api_key_anthropic: Optional[str] = None
-    api_key_cohere: Optional[str] = None
 
 
 class ConfigurationError(Exception):
@@ -420,6 +454,21 @@ class ConfigurationManager:
             'ANTHROPIC_API_KEY': 'anthropic_api_key',
             'OLLAMA_BASE_URL': 'ollama_base_url',
             'COHERE_API_KEY': 'api_key_cohere',
+            # Observability
+            'RAG_OBSERVABILITY_PROVIDER': 'observability_provider',
+            'RAG_OBSERVABILITY_ENABLED': ('observability_enabled', lambda x: x.lower() == 'true'),
+            'LANGFUSE_SECRET_KEY': 'langfuse_secret_key',
+            'LANGFUSE_PUBLIC_KEY': 'langfuse_public_key',
+            'LANGFUSE_HOST': 'langfuse_host',
+            'PHOENIX_ENDPOINT': 'phoenix_endpoint',
+            'PHOENIX_API_KEY': 'phoenix_api_key',
+            'RAG_OBSERVABILITY_SAMPLE_RATE': ('observability_sample_rate', float),
+            'RAG_TRACE_LLM_CALLS': ('trace_llm_calls', lambda x: x.lower() == 'true'),
+            'RAG_TRACE_RETRIEVAL': ('trace_retrieval', lambda x: x.lower() == 'true'),
+            'RAG_TRACE_EMBEDDINGS': ('trace_embeddings', lambda x: x.lower() == 'true'),
+            'RAG_TRACE_EVALUATION': ('trace_evaluation', lambda x: x.lower() == 'true'),
+            'RAG_CAPTURE_INPUTS': ('capture_inputs', lambda x: x.lower() == 'true'),
+            'RAG_CAPTURE_OUTPUTS': ('capture_outputs', lambda x: x.lower() == 'true'),
         }
         
         for env_var, config_key in env_mappings.items():
@@ -450,8 +499,7 @@ class ConfigurationManager:
         if config.embedding_provider == "openai" and not config.openai_api_key:
             self._logger.warning("OpenAI API key not provided for OpenAI embedding provider")
         
-        if config.use_reranking and config.reranker_model == "cohere" and not config.api_key_cohere:
-            self._logger.warning("Cohere API key not provided for Cohere reranker")
+        
         
         # Validate environment-specific settings
         if config.environment == "production":
@@ -482,8 +530,8 @@ class ConfigurationManager:
         # Optionally exclude sensitive information
         if exclude_secrets:
             secret_fields = [
-                'google_api_key', 'openai_api_key', 'anthropic_api_key', 
-                'api_key_openai', 'api_key_anthropic', 'api_key_cohere'
+                'google_api_key', 'openai_api_key',
+                'api_key_openai'
             ]
             for field in secret_fields:
                 if field in config_dict and config_dict[field]:

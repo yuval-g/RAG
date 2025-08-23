@@ -149,8 +149,8 @@ class TestConfigurationManager:
     def test_json_config_loading(self):
         """Test loading configuration from JSON file"""
         config_data = {
-            "llm_provider": "anthropic",
-            "llm_model": "claude-3-sonnet",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4",
             "temperature": 0.3,
             "chunk_size": 800,
             "retrieval_k": 7
@@ -162,8 +162,8 @@ class TestConfigurationManager:
         
         config = self.config_manager.load_config(str(config_path))
         
-        assert config.llm_provider == "anthropic"
-        assert config.llm_model == "claude-3-sonnet"
+        assert config.llm_provider == "openai"
+        assert config.llm_model == "gpt-4"
         assert config.temperature == 0.3
         assert config.chunk_size == 800
         assert config.retrieval_k == 7
@@ -338,7 +338,7 @@ class TestConfigurationManager:
         with open(output_path, 'r') as f:
             saved_data = json.load(f)
         
-        assert saved_data["llm_provider"] == "anthropic"
+        
         assert saved_data["temperature"] == 0.3
         assert saved_data["chunk_size"] == 1200
     
@@ -346,8 +346,7 @@ class TestConfigurationManager:
         """Test saving configuration with secrets excluded"""
         config = PipelineConfig(
             llm_provider="openai",
-            openai_api_key="secret-key-123",
-            api_key_cohere="cohere-secret"
+            openai_api_key="secret-key-123"
         )
         
         output_path = Path(self.temp_dir) / "output_config.yaml"
@@ -357,7 +356,6 @@ class TestConfigurationManager:
             saved_data = yaml.safe_load(f)
         
         assert saved_data["openai_api_key"] == "***REDACTED***"
-        assert saved_data["api_key_cohere"] == "***REDACTED***"
     
     def test_save_config_include_secrets(self):
         """Test saving configuration with secrets included"""

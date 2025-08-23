@@ -41,7 +41,6 @@ routing_strategy: "logical"
 # Retrieval Configuration
 retrieval_k: 5
 use_reranking: true
-reranker_model: "cohere"
 reranker_top_k: 10
 
 # Hybrid Retrieval Configuration
@@ -83,4 +82,3 @@ enable_connection_pooling: true
 # API Keys (set via environment variables)
 # GOOGLE_API_KEY: "your-google-api-key"
 # OPENAI_API_KEY: "your-openai-api-key"
-# COHERE_API_KEY: "your-cohere-api-key"

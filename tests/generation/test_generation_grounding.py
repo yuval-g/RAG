@@ -25,7 +25,7 @@ class TestGroundedGeneration:
         """Create test configuration"""
         return PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.0,
             max_tokens=1000
         )

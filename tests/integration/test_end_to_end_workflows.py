@@ -136,7 +136,7 @@ class TestEndToEndWorkflows:
             retrieval_k=5,
             temperature=0.1,
             use_reranking=True,
-            reranker_model="cohere",
+            
             query_strategies=["multi_query", "rag_fusion", "hyde"],
             enable_logging=True,
             log_level="DEBUG"
@@ -619,7 +619,7 @@ class TestEndToEndWorkflows:
                 config = config_manager.load_config()
                 
                 assert isinstance(config, PipelineConfig)
-                assert config.llm_provider in [LLMProvider.GOOGLE, LLMProvider.OPENAI, LLMProvider.ANTHROPIC]
+                assert config.llm_provider in [LLMProvider.GOOGLE, LLMProvider.OPENAI]
                 assert config.vector_store in [VectorStore.CHROMA, VectorStore.PINECONE, VectorStore.WEAVIATE]
                 assert config.chunk_size > 0
                 assert config.retrieval_k > 0

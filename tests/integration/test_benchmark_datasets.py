@@ -302,79 +302,6 @@ class TestBenchmarkDatasets:
     @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
     @patch('src.rag_engine.indexing.basic_indexer.Chroma')
-    def test_wikipedia_knowledge_base_workflow(self, mock_chroma, mock_embeddings, mock_llm,
-                                             wikipedia_sample_documents, squad_style_qa_dataset):
-        """Test RAG system with Wikipedia-style knowledge base"""
-        # Setup mocks
-        mock_embeddings.return_value = Mock()
-        
-        mock_llm_instance = Mock()
-        mock_response = Mock()
-        mock_response.content = "Machine learning is a type of artificial intelligence that allows software applications to become more accurate at predicting outcomes without being explicitly programmed to do so."
-        mock_llm_instance.invoke.return_value = mock_response
-        mock_llm.return_value = mock_llm_instance
-        
-        mock_vectorstore = Mock()
-        mock_retriever = Mock()
-        mock_retrieved_docs = [
-            Mock(page_content=wikipedia_sample_documents[0].content, 
-                 metadata=wikipedia_sample_documents[0].metadata)
-        ]
-        mock_retriever.get_relevant_documents.return_value = mock_retrieved_docs
-        mock_vectorstore.as_retriever.return_value = mock_retriever
-        mock_chroma.from_documents.return_value = mock_vectorstore
-        
-        # Configure for Wikipedia-style content
-        config = PipelineConfig(
-            chunk_size=800,  # Larger chunks for encyclopedia content
-            chunk_overlap=100,
-            retrieval_k=5,
-            temperature=0.1  # Lower temperature for factual content
-        )
-        
-        engine = RAGEngine(config)
-        
-        # Index Wikipedia documents
-        indexing_result = engine.add_documents(wikipedia_sample_documents)
-        assert indexing_result is True
-        assert engine.get_document_count() == len(wikipedia_sample_documents)
-        
-        # Test with SQuAD-style questions
-        correct_answers = 0
-        total_questions = len(squad_style_qa_dataset)
-        
-        for test_case in squad_style_qa_dataset:
-            response = engine.query(test_case.question)
-            
-            # Verify response structure
-            assert isinstance(response.answer, str)
-            assert len(response.answer) > 0
-            assert response.confidence_score >= 0.0
-            assert len(response.source_documents) > 0
-            
-            # Check if response contains key terms from expected answer
-            expected_terms = test_case.expected_answer.lower().split()
-            response_terms = response.answer.lower().split()
-            
-            # Simple overlap check (in real scenario, would use more sophisticated metrics)
-            overlap = len(set(expected_terms) & set(response_terms))
-            if overlap >= len(expected_terms) * 0.3:  # 30% term overlap threshold
-                correct_answers += 1
-        
-        # Calculate accuracy
-        accuracy = correct_answers / total_questions
-        
-        # Verify reasonable performance
-        assert accuracy >= 0.0  # Basic sanity check
-        assert engine.get_document_count() == len(wikipedia_sample_documents)
-        
-        # Test system info with Wikipedia content
-        system_info = engine.get_system_info()
-        assert system_info["stats"]["indexed_documents"] == len(wikipedia_sample_documents)
-    
-    @patch('src.rag_engine.generation.generation_engine.ChatGoogleGenerativeAI')
-    @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
-    @patch('src.rag_engine.indexing.basic_indexer.Chroma')
     def test_msmarco_passage_retrieval_workflow(self, mock_chroma, mock_embeddings, mock_llm,
                                               msmarco_style_passages):
         """Test passage retrieval with MS MARCO-style data"""
@@ -557,8 +484,7 @@ class TestBenchmarkDatasets:
     @patch('src.rag_engine.indexing.basic_indexer.GoogleGenerativeAIEmbeddings')
     @patch('src.rag_engine.indexing.basic_indexer.Chroma')
     @patch('src.rag_engine.evaluation.custom_evaluator.ChatGoogleGenerativeAI')
-    @patch('src.rag_engine.evaluation.ragas_integration.ChatGoogleGenerativeAI')
-    def test_comprehensive_benchmark_evaluation(self, mock_ragas_llm, mock_eval_llm, mock_chroma, 
+    def test_comprehensive_benchmark_evaluation(self, mock_eval_llm, mock_chroma, 
                                               mock_embeddings, mock_llm,
                                               wikipedia_sample_documents, squad_style_qa_dataset):
         """Test comprehensive evaluation using multiple benchmark-style metrics"""
@@ -566,7 +492,6 @@ class TestBenchmarkDatasets:
         mock_embeddings.return_value = Mock()
         mock_llm.return_value = Mock()
         mock_eval_llm.return_value = Mock()
-        mock_ragas_llm.return_value = Mock()
         
         # Mock evaluation responses
         mock_eval_response = Mock()

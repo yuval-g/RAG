@@ -28,15 +28,15 @@ def test_pipeline_config_creation():
 def test_pipeline_config_customization():
     """Test that PipelineConfig can be customized"""
     config = PipelineConfig(
-        llm_provider="anthropic",
-        llm_model="claude-3-sonnet",
+        llm_provider="openai",
+        llm_model="gpt-4",
         temperature=0.5,
         chunk_size=500,
         retrieval_k=10
     )
     
-    assert config.llm_provider == "anthropic"
-    assert config.llm_model == "claude-3-sonnet"
+    assert config.llm_provider == "openai"
+    assert config.llm_model == "gpt-4"
     assert config.temperature == 0.5
     assert config.chunk_size == 500
     assert config.retrieval_k == 10

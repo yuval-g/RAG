@@ -30,7 +30,7 @@ class TestLLMProvidersWithEnv:
         
         config = PipelineConfig(
             llm_provider="google",
-            llm_model="gemini-pro",
+            llm_model="gemini-2.0-flash-lite",
             temperature=0.5
         )
         

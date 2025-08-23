@@ -60,20 +60,17 @@ Reasoning: The document contains keywords related to machine learning and neural
             )
         ]
     
-    @patch('src.rag_engine.retrieval.self_correction.ChatGoogleGenerativeAI')
-    def test_init(self, mock_llm_class, config):
+    @patch('src.rag_engine.retrieval.self_correction.get_llm')
+    def test_init(self, mock_get_llm, config):
         """Test CRAGRelevanceChecker initialization"""
         mock_llm = Mock()
-        mock_llm_class.return_value = mock_llm
+        mock_get_llm.return_value = mock_llm
         
         checker = CRAGRelevanceChecker(config)
         
         assert checker.config == config
         assert checker.llm == mock_llm
-        mock_llm_class.assert_called_once_with(
-            model="gemini-pro",
-            temperature=0.0
-        )
+        mock_get_llm.assert_called_once_with(config.llm_model, 0.0)
     
     @patch('src.rag_engine.retrieval.self_correction.ChatGoogleGenerativeAI')
     def test_assess_relevance_relevant(self, mock_llm_class, config, mock_llm_response, sample_documents):
@@ -226,16 +223,17 @@ class TestSelfRAGValidator:
             )
         ]
     
-    @patch('src.rag_engine.retrieval.self_correction.ChatGoogleGenerativeAI')
-    def test_init(self, mock_llm_class, config):
+    @patch('src.rag_engine.retrieval.self_correction.get_llm')
+    def test_init(self, mock_get_llm, config):
         """Test SelfRAGValidator initialization"""
         mock_llm = Mock()
-        mock_llm_class.return_value = mock_llm
+        mock_get_llm.return_value = mock_llm
         
         validator = SelfRAGValidator(config)
         
         assert validator.config == config
         assert validator.llm == mock_llm
+        mock_get_llm.assert_called_once_with(config.llm_model, 0.0)
     
     @patch('src.rag_engine.retrieval.self_correction.ChatGoogleGenerativeAI')
     def test_validate_response_grounded(self, mock_llm_class, config, sample_context):

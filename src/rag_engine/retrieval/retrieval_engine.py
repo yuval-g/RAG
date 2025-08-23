@@ -61,11 +61,9 @@ class RetrievalEngine:
     def _setup_reranker(self):
         """Setup the re-ranker based on configuration"""
         try:
-            reranker_strategy = self.config.reranker_model or "llm"
+            reranker_strategy = "llm"
             
-            if reranker_strategy == "cohere":
-                self.reranker = ReRanker(strategy="cohere", config=self.config)
-            elif reranker_strategy == "contextual":
+            if reranker_strategy == "contextual":
                 base_retriever = self.retrievers.get(self.default_retriever_name)
                 if hasattr(base_retriever, '_retriever') and base_retriever._retriever is not None:
                     self.reranker = ReRanker(

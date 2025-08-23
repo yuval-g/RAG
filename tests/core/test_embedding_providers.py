@@ -179,8 +179,6 @@ class TestOpenAIEmbeddingProvider:
 class TestHuggingFaceEmbeddingProvider:
     """Test cases for HuggingFace embedding provider"""
     
-    @pytest.mark.skip(reason="WIP - HuggingFace embedding provider not ready")
-    @pytest.mark.wip
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.SentenceTransformer')
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.torch.cuda.is_available')
     def test_initialization_default(self, mock_cuda_available, mock_sentence_transformer):
@@ -200,7 +198,6 @@ class TestHuggingFaceEmbeddingProvider:
             device="cpu"
         )
     
-    @pytest.mark.skip(reason="WIP - HuggingFace embedding provider not ready")
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.SentenceTransformer')
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.torch.cuda.is_available')
     def test_initialization_cuda_available(self, mock_cuda_available, mock_sentence_transformer):
@@ -218,7 +215,6 @@ class TestHuggingFaceEmbeddingProvider:
             device="cuda"
         )
     
-    @pytest.mark.skip(reason="WIP - HuggingFace embedding provider not ready")
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.SentenceTransformer')
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.torch.cuda.is_available')
     def test_initialization_custom_model(self, mock_cuda_available, mock_sentence_transformer):
@@ -242,14 +238,12 @@ class TestHuggingFaceEmbeddingProvider:
             device="cpu"
         )
     
-    @pytest.mark.skip(reason="WIP - HuggingFace embedding provider not ready")
     def test_initialization_missing_dependency(self):
         """Test initialization fails when sentence-transformers is not installed"""
         with patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.SentenceTransformer', side_effect=ImportError):
             with pytest.raises(EmbeddingProviderError, match="sentence-transformers package not installed"):
                 HuggingFaceEmbeddingProvider()
     
-    @pytest.mark.skip(reason="WIP - HuggingFace embedding provider not ready")
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.SentenceTransformer')
     @patch('src.rag_engine.core.embedding_providers.HuggingFaceEmbeddingProvider.torch.cuda.is_available')
     def test_embed_documents_success(self, mock_cuda_available, mock_sentence_transformer):

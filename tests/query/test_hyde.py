@@ -39,17 +39,21 @@ class TestHyDEProcessor:
     
     def test_init_default(self):
         """Test HyDEProcessor initialization with defaults"""
-        with patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.hyde.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             processor = HyDEProcessor()
             
             assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.0
             assert processor.document_style == "scientific_paper"
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_init_custom(self):
         """Test HyDEProcessor initialization with custom parameters"""
-        with patch('src.rag_engine.query.hyde.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.hyde.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             processor = HyDEProcessor(
                 llm_model="gemini-2.0-flash-lite",
                 temperature=0.3,
@@ -59,7 +63,7 @@ class TestHyDEProcessor:
             assert processor.llm_model == "gemini-2.0-flash-lite"
             assert processor.temperature == 0.3
             assert processor.document_style == "technical_documentation"
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_create_hyde_prompt_scientific_paper(self, processor):
         """Test HyDE prompt creation for scientific paper style"""

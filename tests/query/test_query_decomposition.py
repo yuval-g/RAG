@@ -39,7 +39,9 @@ class TestQueryDecomposer:
     
     def test_init(self):
         """Test QueryDecomposer initialization"""
-        with patch('src.rag_engine.query.decomposition.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.decomposition.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             decomposer = QueryDecomposer(
                 llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
@@ -49,7 +51,7 @@ class TestQueryDecomposer:
             assert decomposer.llm_model == "gemini-2.0-flash-lite"
             assert decomposer.temperature == 0.2
             assert decomposer.num_sub_questions == 4
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_parse_sub_questions(self, decomposer):
         """Test sub-question parsing from LLM output"""

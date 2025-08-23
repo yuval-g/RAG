@@ -1,6 +1,6 @@
 """
 Example demonstrating multi-provider LLM support.
-Shows how to use different LLM providers (Google, OpenAI, Anthropic, Local).
+Shows how to use different LLM providers (Google, OpenAI, Local).
 Implements requirement 7.2 for supporting multiple LLM backends.
 """
 
@@ -273,7 +273,7 @@ def main():
     print("🚀 MULTI-PROVIDER LLM SUPPORT DEMONSTRATION")
     print("=" * 80)
     print("This example demonstrates the multi-provider LLM support system")
-    print("that allows switching between Google Gemini, OpenAI, Anthropic, and local models.")
+    
     print("=" * 80)
     print()
     
@@ -296,7 +296,7 @@ def main():
     print("Key Features Demonstrated:")
     print("• ✅ Provider factory with multiple LLM backends")
     print("• ✅ Configuration validation and environment variable support")
-    print("• ✅ Google Gemini, OpenAI, Anthropic, and Local provider support")
+    print("• ✅ Google Gemini, OpenAI, and Local provider support")
     print("• ✅ Dynamic provider switching")
     print("• ✅ Custom provider registration")
     print("• ✅ Structured output support")
@@ -305,9 +305,13 @@ def main():
     print("💡 To use with real API keys, set the following environment variables:")
     print("   • GOOGLE_API_KEY for Google Gemini")
     print("   • OPENAI_API_KEY for OpenAI")
-    print("   • ANTHROPIC_API_KEY for Anthropic Claude")
     print("   • OLLAMA_BASE_URL for local Ollama server")
 
 
 if __name__ == "__main__":
-    main()
+    main()server")
+
+
+if __name__ == "__main__":
+    main()":
+    main())

@@ -38,7 +38,9 @@ class TestMultiQueryGenerator:
     
     def test_init(self):
         """Test MultiQueryGenerator initialization"""
-        with patch('src.rag_engine.query.multi_query.ChatGoogleGenerativeAI') as mock_llm:
+        with patch('src.rag_engine.query.multi_query.get_llm') as mock_get_llm:
+            mock_llm = Mock()
+            mock_get_llm.return_value = mock_llm
             generator = MultiQueryGenerator(
                 llm_model="gemini-2.0-flash-lite",
                 temperature=0.2,
@@ -48,7 +50,7 @@ class TestMultiQueryGenerator:
             assert generator.llm_model == "gemini-2.0-flash-lite"
             assert generator.temperature == 0.2
             assert generator.num_queries == 3
-            mock_llm.assert_called_once()
+            mock_get_llm.assert_called_once()
     
     def test_parse_queries(self, generator):
         """Test query parsing from LLM output"""
