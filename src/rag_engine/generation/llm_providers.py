@@ -9,9 +9,9 @@ import logging
 import os
 from abc import ABC, abstractmethod
 
-# Ensure environment variables are loaded early
-from ..core.env_loader import ensure_env_loaded
-ensure_env_loaded()
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
 
 try:
     from langchain_google_genai import ChatGoogleGenerativeAI

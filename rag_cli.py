@@ -2,9 +2,8 @@
 """
 Main entry point for the RAG CLI
 """
-# Ensure environment variables are loaded early
-from src.rag_engine.core.env_loader import ensure_env_loaded
-ensure_env_loaded()
+from dotenv import load_dotenv
+load_dotenv()
 
 from src.rag_engine.cli.main import cli
 
