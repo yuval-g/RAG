@@ -56,6 +56,9 @@ RAG/
 │   │   ├── first-steps.md            # First steps guide
 │   │   ├── installation.md           # Installation guide
 │   │   └── quick-start.md            # Quick start tutorial
+│   ├── observability/                # Observability documentation
+│   │   ├── IMPLEMENTATION.md         # Observability implementation details
+│   │   └── README.md                 # Observability overview
 │   ├── operations/                   # Operations guides
 │   │   ├── maintenance.md            # Maintenance procedures
 │   │   ├── monitoring.md             # Monitoring and health checks
@@ -114,6 +117,7 @@ For users who want to deploy, configure, and use the RAG Engine:
 - Configuration guides
 - Deployment instructions
 - Operations guides (monitoring, troubleshooting, maintenance)
+- Observability guides
 - Examples
 
 ### 💻 Developer Documentation
@@ -147,3 +151,7 @@ For developers who want to contribute to or extend the RAG Engine:
 1. [Deployment](./deployment/) → [Docker](./deployment/docker.md)
 2. [Operations](./operations/) → [Monitoring](./operations/monitoring.md)
 3. [Operations](./operations/) → [Troubleshooting](./operations/troubleshooting.md)
+
+### For Observability
+1. [Observability](./observability/) → [Implementation](./observability/IMPLEMENTATION.md)
+2. [Observability](./observability/) → [README](./observability/README.md)
