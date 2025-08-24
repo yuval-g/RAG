@@ -1,84 +1,109 @@
 # Performance-optimized configuration for the RAG system
-# This configuration enables all performance optimization features
+# Maximum throughput and speed optimizations
 
-# Environment
-environment: "production"
+# =============================================================================
+# ENVIRONMENT CONFIGURATION
+# =============================================================================
+environment: "performance"
 
-# LLM Configuration
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
 llm_provider: "google"
-llm_model: "gemini-2.0-flash-lite"
-temperature: 0.0
-max_tokens: 2048
+llm_model: "gemini-2.0-flash-lite"  # Fastest model
+temperature: 0.0  # No randomness for speed
+max_tokens: 1024  # Shorter responses for speed
 
-# Embedding Configuration
+# =============================================================================
+# EMBEDDING CONFIGURATION
+# =============================================================================
 embedding_provider: "openai"
 embedding_model: "text-embedding-ada-002"
 normalize_embeddings: true
 
-# Vector Store Configuration
+# =============================================================================
+# VECTOR STORE CONFIGURATION
+# =============================================================================
 vector_store: "chroma"
 vector_store_config:
-  persist_directory: "./data/chroma_db"
-  collection_name: "rag_documents"
+  persist_directory: "./data/chroma_perf"
+  collection_name: "rag_performance"
 
-# Indexing Configuration
-indexing_strategy: "basic"
-chunk_size: 1000
-chunk_overlap: 200
+# =============================================================================
+# INDEXING CONFIGURATION
+# =============================================================================
+indexing_strategy: "basic"  # Fastest indexing
+chunk_size: 800  # Optimized chunk size for speed
+chunk_overlap: 100
+chunking_strategy: "recursive"
 
-# Query Processing Configuration
-query_strategies: ["multi_query", "rag_fusion"]
-enable_multi_query: true
-enable_rag_fusion: true
+# =============================================================================
+# QUERY PROCESSING CONFIGURATION
+# =============================================================================
+query_strategies: ["basic"]  # Single strategy for speed
+enable_multi_query: false  # Disabled for speed
+enable_rag_fusion: false
 enable_decomposition: false
 enable_step_back: false
 enable_hyde: false
 
-# Routing Configuration
-routing_enabled: false
-routing_strategy: "logical"
+# =============================================================================
+# RETRIEVAL CONFIGURATION
+# =============================================================================
+retrieval_k: 5  # Balanced for speed and quality
+use_reranking: true  # Keep for quality
+reranker_top_k: 8  # Reduced for speed
 
-# Retrieval Configuration
-retrieval_k: 5
-use_reranking: true
-reranker_top_k: 10
-
-# Hybrid Retrieval Configuration
-enable_hybrid_retrieval: false
-vector_weight: 0.7
-keyword_weight: 0.3
-enable_long_context: false
+# =============================================================================
+# HYBRID RETRIEVAL CONFIGURATION
+# =============================================================================
+enable_hybrid_retrieval: false  # Disabled for speed
+vector_weight: 0.8  # Favor vector search when enabled
+keyword_weight: 0.2
+enable_long_context: true  # Use long context for fewer calls
 context_window_size: 100000
 adaptive_retrieval: false
 
-# Self-Correction Configuration
-enable_self_correction: false
+# =============================================================================
+# SELF-CORRECTION CONFIGURATION
+# =============================================================================
+enable_self_correction: false  # Disabled for speed
 relevance_threshold: 0.7
 factuality_threshold: 0.7
 min_relevant_docs: 2
 
-# Generation Configuration
-include_sources: true
+# =============================================================================
+# GENERATION CONFIGURATION
+# =============================================================================
+include_sources: false  # Disabled for speed
+max_context_length: 8000  # Larger context for fewer calls
+response_format: "text"  # Plain text for speed
 
-# Evaluation Configuration
-evaluation_frameworks: ["custom", "deepeval"]
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation_frameworks: []  # Disabled for performance
 
-# Production Configuration
+# =============================================================================
+# OBSERVABILITY CONFIGURATION
+# =============================================================================
+observability_enabled: false  # Disabled for maximum speed
+trace_llm_calls: false
+trace_retrieval: false
+trace_embeddings: false
+
+# =============================================================================
+# PERFORMANCE CONFIGURATION
+# =============================================================================
 enable_logging: true
-log_level: "INFO"
-enable_metrics: true
-enable_caching: true
-
-# Performance Configuration
-connection_pool_size: 20
-connection_timeout: 30.0
-cache_size: 10000
-cache_ttl: 3600.0
-async_enabled: true
-max_concurrent_requests: 50
-batch_size: 20
+log_level: "ERROR"  # Minimal logging for speed
+enable_metrics: false  # Disabled for speed
+enable_caching: true  # Aggressive caching
+connection_pool_size: 100  # Large pool for concurrency
+connection_timeout: 10.0  # Short timeout
+cache_size: 100000  # Large cache
+cache_ttl: 7200.0  # Long TTL
+async_enabled: true  # Full async for speed
+max_concurrent_requests: 200  # High concurrency
+batch_size: 100  # Large batches
 enable_connection_pooling: true
-
-# API Keys (set via environment variables)
-# GOOGLE_API_KEY: "your-google-api-key"
-# OPENAI_API_KEY: "your-openai-api-key"

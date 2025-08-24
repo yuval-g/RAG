@@ -1,33 +1,103 @@
 # Testing environment configuration
-# This file extends the base config with testing-specific settings
+# Optimized for fast, predictable test execution
 
-# Testing-specific overrides
+# =============================================================================
+# ENVIRONMENT CONFIGURATION
+# =============================================================================
 environment: "testing"
-log_level: "ERROR"
-enable_logging: true
-enable_metrics: false
-enable_caching: false
 
-# Small chunks for fast test execution
-chunk_size: 200
-chunk_overlap: 20
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
+llm_provider: "mock"  # Use mock for consistent testing
+llm_model: "mock-llm-v1"
+temperature: 0.0  # Deterministic responses
+max_tokens: 500
 
-# Minimal retrieval for speed
-retrieval_k: 2
+# =============================================================================
+# EMBEDDING CONFIGURATION
+# =============================================================================
+embedding_provider: "sentence_transformers"  # No API keys needed
+embedding_model: "all-MiniLM-L6-v2"
+normalize_embeddings: true
 
-# Disable advanced features for predictable testing
-enable_multi_query: false
-enable_rag_fusion: false
-enable_self_correction: false
-use_reranking: false
-enable_hybrid_retrieval: false
-
-# In-memory vector store for testing
+# =============================================================================
+# VECTOR STORE CONFIGURATION
+# =============================================================================
+vector_store: "chroma"
 vector_store_config:
-  persist_directory: null
+  persist_directory: null  # In-memory for testing
   collection_name: "rag_test"
 
-# Relaxed thresholds for testing
-relevance_threshold: 0.5
+# =============================================================================
+# INDEXING CONFIGURATION
+# =============================================================================
+indexing_strategy: "basic"
+chunk_size: 200  # Small chunks for fast execution
+chunk_overlap: 20
+chunking_strategy: "recursive"
+
+# =============================================================================
+# QUERY PROCESSING CONFIGURATION
+# =============================================================================
+query_strategies: ["basic"]
+enable_multi_query: false  # Disabled for predictable testing
+enable_rag_fusion: false
+enable_decomposition: false
+enable_step_back: false
+enable_hyde: false
+
+# =============================================================================
+# RETRIEVAL CONFIGURATION
+# =============================================================================
+retrieval_k: 2  # Minimal retrieval for speed
+use_reranking: false
+reranker_top_k: 3
+
+# =============================================================================
+# HYBRID RETRIEVAL CONFIGURATION
+# =============================================================================
+enable_hybrid_retrieval: false
+vector_weight: 0.7
+keyword_weight: 0.3
+enable_long_context: false
+adaptive_retrieval: false
+
+# =============================================================================
+# SELF-CORRECTION CONFIGURATION
+# =============================================================================
+enable_self_correction: false
+relevance_threshold: 0.5  # Relaxed for testing
 factuality_threshold: 0.5
 min_relevant_docs: 1
+
+# =============================================================================
+# GENERATION CONFIGURATION
+# =============================================================================
+include_sources: true
+max_context_length: 1000
+response_format: "markdown"
+
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation_frameworks: ["custom"]
+
+# =============================================================================
+# OBSERVABILITY CONFIGURATION
+# =============================================================================
+observability_enabled: false  # Disabled for testing
+trace_llm_calls: false
+trace_retrieval: false
+trace_embeddings: false
+
+# =============================================================================
+# PERFORMANCE CONFIGURATION
+# =============================================================================
+enable_logging: true
+log_level: "ERROR"  # Minimal logging for clean test output
+enable_metrics: false
+enable_caching: false  # No caching for fresh test results
+batch_size: 5
+max_concurrent_requests: 5
+async_enabled: false  # Synchronous for predictable testing

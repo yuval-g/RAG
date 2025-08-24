@@ -1,27 +1,103 @@
 # Development environment configuration
-# This file extends the base config with development-specific settings
+# Optimized for fast iteration and debugging
 
-# Development-specific overrides
+# =============================================================================
+# ENVIRONMENT CONFIGURATION
+# =============================================================================
 environment: "development"
-log_level: "DEBUG"
-enable_logging: true
-enable_metrics: false
-enable_caching: false
 
-# Use smaller chunks for faster development
-chunk_size: 500
-chunk_overlap: 50
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
+llm_provider: "google"
+llm_model: "gemini-2.0-flash-lite"
+temperature: 0.1
+max_tokens: 1000
 
-# Lower retrieval count for faster responses
-retrieval_k: 3
+# =============================================================================
+# EMBEDDING CONFIGURATION
+# =============================================================================
+embedding_provider: "openai"
+embedding_model: "text-embedding-ada-002"
+normalize_embeddings: true
 
-# Disable advanced features for simpler debugging
-enable_multi_query: false
-enable_rag_fusion: false
-enable_self_correction: false
-use_reranking: false
-
-# Development vector store settings
+# =============================================================================
+# VECTOR STORE CONFIGURATION
+# =============================================================================
+vector_store: "chroma"
 vector_store_config:
   persist_directory: "./data/chroma_dev"
   collection_name: "rag_dev"
+
+# =============================================================================
+# INDEXING CONFIGURATION
+# =============================================================================
+indexing_strategy: "basic"
+chunk_size: 500  # Smaller chunks for faster development
+chunk_overlap: 50
+chunking_strategy: "recursive"
+
+# =============================================================================
+# QUERY PROCESSING CONFIGURATION
+# =============================================================================
+query_strategies: ["basic"]
+enable_multi_query: false  # Disabled for simpler debugging
+enable_rag_fusion: false
+enable_decomposition: false
+enable_step_back: false
+enable_hyde: false
+
+# =============================================================================
+# RETRIEVAL CONFIGURATION
+# =============================================================================
+retrieval_k: 3  # Lower count for faster responses
+use_reranking: false  # Disabled for speed
+reranker_top_k: 5
+
+# =============================================================================
+# HYBRID RETRIEVAL CONFIGURATION
+# =============================================================================
+enable_hybrid_retrieval: false
+vector_weight: 0.7
+keyword_weight: 0.3
+enable_long_context: false
+adaptive_retrieval: false
+
+# =============================================================================
+# SELF-CORRECTION CONFIGURATION
+# =============================================================================
+enable_self_correction: false  # Disabled for simpler debugging
+relevance_threshold: 0.6  # Relaxed for development
+factuality_threshold: 0.6
+min_relevant_docs: 1
+
+# =============================================================================
+# GENERATION CONFIGURATION
+# =============================================================================
+include_sources: true
+max_context_length: 1500
+response_format: "markdown"
+
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation_frameworks: ["custom"]
+
+# =============================================================================
+# OBSERVABILITY CONFIGURATION
+# =============================================================================
+observability_enabled: false  # Disabled for development
+trace_llm_calls: false
+trace_retrieval: false
+trace_embeddings: false
+
+# =============================================================================
+# PERFORMANCE CONFIGURATION
+# =============================================================================
+enable_logging: true
+log_level: "DEBUG"  # Verbose logging for development
+enable_metrics: false  # Disabled for development
+enable_caching: false  # Disabled for fresh results
+batch_size: 5  # Small batches for development
+max_concurrent_requests: 10
+async_enabled: false  # Synchronous for easier debugging

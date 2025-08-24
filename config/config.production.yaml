@@ -1,38 +1,114 @@
 # Production environment configuration
-# This file extends the base config with production-specific settings
+# Optimized for reliability, accuracy, and performance
 
-# Production-specific overrides
+# =============================================================================
+# ENVIRONMENT CONFIGURATION
+# =============================================================================
 environment: "production"
-log_level: "WARNING"
-enable_logging: true
-enable_metrics: true
-enable_caching: true
 
-# Optimized chunk settings for production
-chunk_size: 1000
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
+llm_provider: "google"
+llm_model: "gemini-2.0-flash-lite"
+temperature: 0.0  # Deterministic for production
+max_tokens: 2048
+
+# =============================================================================
+# EMBEDDING CONFIGURATION
+# =============================================================================
+embedding_provider: "openai"
+embedding_model: "text-embedding-ada-002"
+normalize_embeddings: true
+
+# =============================================================================
+# VECTOR STORE CONFIGURATION
+# =============================================================================
+vector_store: "chroma"
+vector_store_config:
+  persist_directory: "/data/chroma_prod"  # Production data path
+  collection_name: "rag_production"
+
+# =============================================================================
+# INDEXING CONFIGURATION
+# =============================================================================
+indexing_strategy: "basic"
+chunk_size: 1000  # Optimized for production
 chunk_overlap: 200
+chunking_strategy: "recursive"
 
-# Higher retrieval count for better accuracy
-retrieval_k: 10
-
-# Enable advanced features for better results
-enable_multi_query: true
+# =============================================================================
+# QUERY PROCESSING CONFIGURATION
+# =============================================================================
+query_strategies: ["multi_query", "rag_fusion"]
+enable_multi_query: true  # Enabled for better results
 enable_rag_fusion: true
-enable_self_correction: true
-use_reranking: true
+enable_decomposition: false
+enable_step_back: false
+enable_hyde: false
+
+# =============================================================================
+# RETRIEVAL CONFIGURATION
+# =============================================================================
+retrieval_k: 10  # Higher count for better accuracy
+use_reranking: true  # Enabled for production quality
 reranker_top_k: 20
 
-# Enable hybrid retrieval for production
-enable_hybrid_retrieval: true
+# =============================================================================
+# HYBRID RETRIEVAL CONFIGURATION
+# =============================================================================
+enable_hybrid_retrieval: true  # Enabled for production
 vector_weight: 0.7
 keyword_weight: 0.3
+enable_long_context: false
+adaptive_retrieval: false
 
-# Production vector store settings
-vector_store_config:
-  persist_directory: "/data/chroma_prod"
-  collection_name: "rag_production"
-  
-# Production-specific thresholds
-relevance_threshold: 0.8
+# =============================================================================
+# SELF-CORRECTION CONFIGURATION
+# =============================================================================
+enable_self_correction: true  # Enabled for production quality
+relevance_threshold: 0.8  # High threshold for production
 factuality_threshold: 0.8
 min_relevant_docs: 3
+
+# =============================================================================
+# GENERATION CONFIGURATION
+# =============================================================================
+include_sources: true
+max_context_length: 4000
+response_format: "markdown"
+
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation_frameworks: ["custom", "deepeval"]
+
+# =============================================================================
+# OBSERVABILITY CONFIGURATION
+# =============================================================================
+observability_enabled: true  # Enabled for production monitoring
+observability_provider: "langfuse"
+observability_sample_rate: 0.1  # Sample 10% for performance
+trace_llm_calls: true
+trace_retrieval: true
+trace_embeddings: true
+trace_evaluation: true
+capture_inputs: true
+capture_outputs: true
+capture_metadata: true
+
+# =============================================================================
+# PERFORMANCE CONFIGURATION
+# =============================================================================
+enable_logging: true
+log_level: "WARNING"  # Production logging level
+enable_metrics: true  # Enabled for monitoring
+enable_caching: true  # Enabled for performance
+connection_pool_size: 50
+connection_timeout: 30.0
+cache_size: 50000
+cache_ttl: 3600.0
+async_enabled: true
+max_concurrent_requests: 100
+batch_size: 50
+enable_connection_pooling: true

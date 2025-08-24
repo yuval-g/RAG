@@ -1,77 +1,151 @@
 # Example configuration for the RAG system
-# This file demonstrates how to configure the RAG engine
+# This file demonstrates all available configuration options with descriptions
 
-# Environment Configuration
-environment: "development"
+# =============================================================================
+# ENVIRONMENT CONFIGURATION
+# =============================================================================
+environment: "development"  # Environment name: development, testing, production, performance
 
-# LLM Configuration
-llm_provider: "google"  # google, openai, local, ollama
-llm_model: "gemini-2.0-flash-lite"
-temperature: 0.0
-max_tokens: null
+# =============================================================================
+# LLM CONFIGURATION
+# =============================================================================
+llm_provider: "google"  # LLM provider: google, openai, local, ollama, mock
+llm_model: "gemini-2.0-flash-lite"  # Model name for the chosen provider
+temperature: 0.0  # Randomness in responses (0.0 = deterministic, 1.0 = very random)
+max_tokens: null  # Maximum tokens in response (null = provider default)
 
-# Embedding Configuration
-embedding_provider: "openai"  # openai, huggingface
-embedding_model: "text-embedding-ada-002"
-embedding_dimensions: null
-embedding_device: null  # For HuggingFace models (cpu, cuda, mps)
-normalize_embeddings: true
+# =============================================================================
+# EMBEDDING CONFIGURATION
+# =============================================================================
+embedding_provider: "openai"  # Embedding provider: openai, huggingface, sentence_transformers
+embedding_model: "text-embedding-ada-002"  # Embedding model name
+embedding_dimensions: null  # Embedding dimensions (null = auto-detect)
+embedding_device: null  # Device for HuggingFace models: cpu, cuda, mps
+normalize_embeddings: true  # Whether to normalize embedding vectors
 
-# Vector Store Configuration
-vector_store: "chroma"  # chroma, pinecone, weaviate
-vector_store_config: 
-  persist_directory: "./data/chroma"
-  collection_name: "rag_collection"
+# =============================================================================
+# VECTOR STORE CONFIGURATION
+# =============================================================================
+vector_store: "chroma"  # Vector store provider: chroma, pinecone, weaviate
+vector_store_config:
+  persist_directory: "./data/chroma"  # Directory to persist vector data
+  collection_name: "rag_collection"  # Name of the vector collection
 
-# Indexing Configuration
-indexing_strategy: "basic"  # basic, multi_representation, colbert, raptor
-chunk_size: 1000
-chunk_overlap: 200
+# =============================================================================
+# INDEXING CONFIGURATION
+# =============================================================================
+indexing_strategy: "basic"  # Indexing strategy: basic, multi_representation, colbert, raptor
+chunk_size: 1000  # Size of text chunks for indexing
+chunk_overlap: 200  # Overlap between consecutive chunks
+chunking_strategy: "recursive"  # How to split documents: recursive, character, token
 
-# Query Processing Configuration
-query_strategies: ["basic"]
-enable_multi_query: false
-enable_rag_fusion: false
-enable_decomposition: false
-enable_step_back: false
-enable_hyde: false
+# =============================================================================
+# QUERY PROCESSING CONFIGURATION
+# =============================================================================
+query_strategies: ["basic"]  # List of query strategies to use
+enable_multi_query: false  # Generate multiple query variations
+enable_rag_fusion: false  # Use RAG fusion for query processing
+enable_decomposition: false  # Break complex queries into sub-queries
+enable_step_back: false  # Generate step-back prompts
+enable_hyde: false  # Use HyDE (Hypothetical Document Embeddings)
+query_expansion: false  # Expand queries with related terms
+multi_query: false  # Alternative multi-query setting
 
-# Routing Configuration
-routing_enabled: false
-routing_strategy: "logical"  # logical, semantic, hybrid
+# =============================================================================
+# ROUTING CONFIGURATION
+# =============================================================================
+routing_enabled: false  # Enable query routing to different strategies
+routing_strategy: "logical"  # Routing strategy: logical, semantic, hybrid
 
-# Retrieval Configuration
-retrieval_k: 5
-use_reranking: false
-reranker_top_k: 10
+# =============================================================================
+# RETRIEVAL CONFIGURATION
+# =============================================================================
+retrieval_k: 5  # Number of documents to retrieve
+retrieval_strategy: "similarity"  # Retrieval strategy: similarity, mmr, diversity
+top_k: 5  # Alternative top-k setting
+similarity_threshold: 0.7  # Minimum similarity threshold for retrieval
+use_reranking: false  # Enable document reranking
+reranker_top_k: 10  # Number of documents to consider for reranking
+reranker_provider: "sentence_transformers"  # Reranking provider
+reranker_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"  # Reranking model
+rerank_top_k: 3  # Final number of documents after reranking
 
-# Hybrid Retrieval Configuration
-enable_hybrid_retrieval: false
-vector_weight: 0.7
-keyword_weight: 0.3
-enable_long_context: false
-context_window_size: 100000
-adaptive_retrieval: false
+# =============================================================================
+# HYBRID RETRIEVAL CONFIGURATION
+# =============================================================================
+enable_hybrid_retrieval: false  # Combine vector and keyword search
+vector_weight: 0.7  # Weight for vector search in hybrid retrieval
+keyword_weight: 0.3  # Weight for keyword search in hybrid retrieval
+enable_long_context: false  # Enable long context processing
+context_window_size: 100000  # Size of context window for long context
+adaptive_retrieval: false  # Adapt retrieval based on query complexity
 
-# Self-Correction Configuration
-enable_self_correction: false
-relevance_threshold: 0.7
-factuality_threshold: 0.7
-min_relevant_docs: 2
+# =============================================================================
+# SELF-CORRECTION CONFIGURATION
+# =============================================================================
+enable_self_correction: false  # Enable self-correction of responses
+relevance_threshold: 0.7  # Threshold for document relevance
+factuality_threshold: 0.7  # Threshold for factual accuracy
+min_relevant_docs: 2  # Minimum number of relevant documents required
 
-# Generation Configuration
-prompt_template: null
-include_sources: true
+# =============================================================================
+# GENERATION CONFIGURATION
+# =============================================================================
+prompt_template: null  # Custom prompt template (null = use default)
+include_sources: true  # Include source references in responses
+max_context_length: 2000  # Maximum context length for generation
+response_format: "markdown"  # Format of responses: markdown, text, json
 
-# Evaluation Configuration
-evaluation_frameworks: ["custom"]
+# =============================================================================
+# EVALUATION CONFIGURATION
+# =============================================================================
+evaluation_frameworks: ["custom"]  # Evaluation frameworks: custom, deepeval
 
-# Production Configuration
-enable_logging: true
-log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-enable_metrics: false
-enable_caching: false
+# =============================================================================
+# OBSERVABILITY CONFIGURATION
+# =============================================================================
+observability_enabled: false  # Enable observability and tracing
+observability_provider: "langfuse"  # Observability provider: langfuse, phoenix, disabled
+observability_sample_rate: 1.0  # Percentage of traces to capture (0.0-1.0)
+langfuse_secret_key: null  # Langfuse secret key
+langfuse_public_key: null  # Langfuse public key
+langfuse_host: "https://cloud.langfuse.com"  # Langfuse host URL
+phoenix_endpoint: "http://localhost:6006"  # Phoenix server endpoint
+phoenix_api_key: null  # Phoenix API key
+trace_llm_calls: true  # Trace LLM generation calls
+trace_retrieval: true  # Trace document retrieval operations
+trace_embeddings: true  # Trace embedding generation
+trace_evaluation: true  # Trace evaluation runs
+capture_inputs: true  # Capture input data in traces
+capture_outputs: true  # Capture output data in traces
+capture_metadata: true  # Capture additional metadata
+flush_interval: 10  # Seconds between automatic flushes
+max_batch_size: 100  # Maximum batch size for trace uploads
 
-# API Keys (can also be set via environment variables)
-google_api_key: null
-openai_api_key: null
+# =============================================================================
+# PERFORMANCE CONFIGURATION
+# =============================================================================
+enable_logging: true  # Enable logging
+log_level: "INFO"  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+log_file: "./logs/rag_engine.log"  # Log file path
+enable_metrics: false  # Enable metrics collection
+enable_caching: false  # Enable response caching
+connection_pool_size: 20  # Size of connection pool
+connection_timeout: 30.0  # Connection timeout in seconds
+cache_size: 10000  # Size of cache
+cache_ttl: 3600.0  # Cache time-to-live in seconds
+async_enabled: true  # Enable async processing
+max_concurrent_requests: 50  # Maximum concurrent requests
+batch_size: 20  # Batch size for processing
+enable_connection_pooling: true  # Enable connection pooling
+
+# =============================================================================
+# API KEYS (can also be set via environment variables)
+# =============================================================================
+google_api_key: null  # Google API key (or set GOOGLE_API_KEY env var)
+openai_api_key: null  # OpenAI API key (or set OPENAI_API_KEY env var)
+
+# =============================================================================
+# OLLAMA CONFIGURATION (for local LLM)
+# =============================================================================
+ollama_base_url: "http://localhost:11434"  # Ollama server URL
