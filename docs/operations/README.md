@@ -5,7 +5,6 @@ This directory contains comprehensive guides for operating, monitoring, and main
 ## Table of Contents
 
 - [Monitoring and Health Checks](./monitoring.md) - Monitoring system health and performance
-- [Troubleshooting](./troubleshooting.md) - Resolving common issues and problems
 - [Maintenance](./maintenance.md) - Routine maintenance tasks and procedures
 - [Scaling](./scaling.md) - Scaling the system for increased demand
 
@@ -14,7 +13,7 @@ This directory contains comprehensive guides for operating, monitoring, and main
 If you're new to operating the RAG Engine:
 
 1. Start with [Monitoring and Health Checks](./monitoring.md) to understand how to monitor your deployment
-2. Learn how to [Troubleshoot](./troubleshooting.md) common issues
+2. Refer to the [FAQ section](../faq/troubleshooting.md) for common issues and troubleshooting.
 3. Set up [Maintenance](./maintenance.md) procedures for ongoing system care
 4. Plan for [Scaling](./scaling.md) as your usage grows
 
@@ -31,7 +30,7 @@ If you're new to operating the RAG Engine:
 - Performance optimization using [Scaling](./scaling.md) strategies
 
 ### When Issues Arise
-- Use the [Troubleshooting](./troubleshooting.md) guide to diagnose and resolve problems
+- Use the [troubleshooting guide in the FAQ section](../faq/troubleshooting.md) to diagnose and resolve problems
 - Check logs and metrics for error patterns
 - Follow escalation procedures for critical issues
 
@@ -54,12 +53,6 @@ If you're new to operating the RAG Engine:
 - Vertical scaling approaches
 - Auto-scaling configuration
 - Load balancing setup
-
-### Troubleshooting
-- Common error patterns
-- Diagnostic techniques
-- Recovery procedures
-- Performance issue resolution
 
 ## Related Documentation
 
